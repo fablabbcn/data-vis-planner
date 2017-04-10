@@ -1,4 +1,4 @@
-version: '2'
+version: '2.0'
 
 services:
   redis:
@@ -27,12 +27,26 @@ services:
       dockerfile: Dockerfile
     command: celery worker -A app.celery --loglevel=info
     tty: true
-    env_file:
-      - '.env'
+    environment:
+      - C_FORCE_ROOT=true
     volumes:
       - ./flask-celery-example:/flask-celery-example
     depends_on:
       - redis
+
+  meteor:
+    build:
+      context: ./python_meteor
+      dockerfile: Dockerfile
+    command: meteor --allow-superuser
+    volumes:
+      - ./python_meteor:/meteor
+    env_file:
+      .env
+    ports:
+      - 3000:3000
+      - 3001:3001
+
 
 volumes:
   redis:
