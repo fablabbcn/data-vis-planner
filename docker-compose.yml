@@ -9,6 +9,13 @@ services:
     ports:
       - '6379:6379'
 
+  mongo:
+    image: mongo:latest
+    volumes:
+      - mongo:/data
+    ports:
+      - '27017:27017'
+      
   website:
     build:
       context: ./flask-celery-example
@@ -41,12 +48,13 @@ services:
     command: meteor --allow-superuser
     volumes:
       - ./python_meteor:/meteor
-    env_file:
-      .env
+    links:
+      - mongo
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/meteor
     ports:
       - 3000:3000
-      - 3001:3001
-
 
 volumes:
   redis:
+  mongo:
