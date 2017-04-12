@@ -15,14 +15,12 @@ services:
       - mongo:/data
     ports:
       - '27017:27017'
-      
+
   website:
     build:
       context: ./flask-celery-example
       dockerfile: Dockerfile
     command: gunicorn -b 0.0.0.0:8000 --access-logfile - "app:app"
-    environment:
-      PYTHONUNBUFFERED: 'true'
     volumes:
       - ./flask-celery-example:/flask-celery-example
     ports:
@@ -33,9 +31,6 @@ services:
       context: ./flask-celery-example
       dockerfile: Dockerfile
     command: celery worker -A app.celery --loglevel=info
-    tty: true
-    environment:
-      - C_FORCE_ROOT=true
     volumes:
       - ./flask-celery-example:/flask-celery-example
     depends_on:
