@@ -22,7 +22,7 @@ services:
       dockerfile: Dockerfile
     command: gunicorn -b 0.0.0.0:8000 --access-logfile - "app:app"
     volumes:
-      - ./flask-celery-example:/flask-celery-example
+      - ./flask-celery-example:/home/user_python/app
     ports:
       - "8000:8000"
 
@@ -32,7 +32,7 @@ services:
       dockerfile: Dockerfile
     command: celery worker -A app.celery --loglevel=info
     volumes:
-      - ./flask-celery-example:/flask-celery-example
+      - ./flask-celery-example:/home/user_python/app
     depends_on:
       - redis
 
@@ -40,13 +40,11 @@ services:
     build:
       context: ./python_meteor
       dockerfile: Dockerfile
-    command: meteor --allow-superuser
+    command: meteor
     volumes:
-      - ./python_meteor:/meteor
+      - ./python_meteor:/home/user_meteor/app
     links:
       - mongo
-    environment:
-      - MONGO_URL=mongodb://mongo:27017/meteor
     ports:
       - 3000:3000
 
