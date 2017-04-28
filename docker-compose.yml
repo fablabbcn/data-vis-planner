@@ -14,7 +14,7 @@ services:
     volumes:
       - mongo:/data
     ports:
-      - '3001:27017'
+      - '27017:27017'
 
   website:
     build:
@@ -32,8 +32,6 @@ services:
     command: celery worker -A app.celery --loglevel=info
     volumes:
       - ./flask-celery-example:/home/user_python/app
-    depends_on:
-      - redis
 
   meteor:
     build:
@@ -41,12 +39,14 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./python_meteor:/home/user_meteor/app
+    depends_on:
+      - mongo
     links:
       - mongo
     ports:
       - 3000:3000
     environment:
-      - "MONGO_URL=mongodb://mongo:3001/meteor"
+      - "MONGO_URL=mongodb://mongo:27017/meteor"
 
 volumes:
   redis:
