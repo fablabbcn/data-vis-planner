@@ -3,7 +3,7 @@ version: '2.0'
 services:
   redis:
     image: 'redis:3.0-alpine'
-    command: redis-server --requirepass devpassword
+    command: redis-server
     volumes:
       - 'redis:/var/lib/redis/data'
     ports:
@@ -14,13 +14,12 @@ services:
     volumes:
       - mongo:/data
     ports:
-      - '27017:27017'
+      - '3001:27017'
 
   website:
     build:
       context: ./flask-celery-example
       dockerfile: Dockerfile
-    command: gunicorn -b 0.0.0.0:8000 --access-logfile - "app:app"
     volumes:
       - ./flask-celery-example:/home/user_python/app
     ports:
@@ -40,13 +39,14 @@ services:
     build:
       context: ./python_meteor
       dockerfile: Dockerfile
-    command: meteor
     volumes:
       - ./python_meteor:/home/user_meteor/app
     links:
       - mongo
     ports:
       - 3000:3000
+    environment:
+      - "MONGO_URL=mongodb://mongo:3001/meteor"
 
 volumes:
   redis:
