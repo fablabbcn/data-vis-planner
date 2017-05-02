@@ -18,7 +18,7 @@ services:
 
   website:
     build:
-      context: ./flask-celery-example
+      context: ./datavizplatform-flask
       dockerfile: Dockerfile
     volumes:
       - ./flask-celery-example:/home/user_python/app
@@ -27,7 +27,7 @@ services:
 
   celery:
     build:
-      context: ./flask-celery-example
+      context: ./datavizplatform-flask
       dockerfile: Dockerfile
     command: celery worker -A app.celery --loglevel=info
     volumes:
@@ -35,7 +35,7 @@ services:
 
   meteor:
     build:
-      context: ./python_meteor
+      context: ./datavizplatform-meteor
       dockerfile: Dockerfile
     volumes:
       - ./python_meteor:/home/user_meteor/app
