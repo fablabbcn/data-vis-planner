@@ -8,11 +8,24 @@ ENV LANGUAGE en_US.UTF-8
 
 # Install Meteor
 RUN curl https://install.meteor.com/ | sh
-ENV INSTALL_PATH /meteor
-RUN mkdir -p $INSTALL_PATH
-WORKDIR $INSTALL_PATH
 
-# Copy and run app
-COPY . .
-RUN cd app/;meteor npm install --production
-CMD cd app;meteor --allow-superuser
+# Add non-root user, and add Meteor for her
+RUN useradd -m -G users -s /bin/bash meteoruser
+RUN echo "user ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/user && chmod 0440 /etc/sudoers.d/user
+USER meteoruser
+RUN meteor --version
+
+# Copy the app
+ONBUILD USER meteoruser
+# ONBUILD RUN cd /home/meteoruser && mkdir -p app
+ONBUILD COPY . /home/meteor/app/.
+
+# Change as root the permissions of the app
+ONBUILD USER root
+ONBUILD RUN chown -R meteoruser /home/meteoruser/app/
+ONBUILD RUN rm -R /home/meteor/app/.meteor/local/*
+
+# Switch to non-root user, and run the app
+ONBUILD USER meteoruser
+
+CMD cd /home/meteoruser/app && meteor run
