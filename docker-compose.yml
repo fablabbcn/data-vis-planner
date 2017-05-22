@@ -21,7 +21,7 @@ services:
       context: ./datavizplatform-flask
       dockerfile: Dockerfile
     volumes:
-      - ./flask-celery-example:/home/user_python/app
+      - ./datavizplatform-flask:/home/user_python/app
     ports:
       - "8000:8000"
 
@@ -29,16 +29,18 @@ services:
     build:
       context: ./datavizplatform-flask
       dockerfile: Dockerfile
-    command: celery worker -A app.celery --loglevel=info
+    command:  celery -A app.celery worker -l info
     volumes:
-      - ./flask-celery-example:/home/user_python/app
+      - ./datavizplatform-flask:/home/user_python/app
+    depends_on:
+     - redis
 
   meteor:
     build:
       context: ./datavizplatform-meteor
       dockerfile: Dockerfile
     volumes:
-      - ./python_meteor:/home/user_meteor/app
+      - ./datavizplatform-meteor/app:/home/meteoruser/app
     depends_on:
       - mongo
     links:
