@@ -16,7 +16,7 @@ services:
     ports:
       - '27017:27017'
 
-  website:
+  flask:
     build:
       context: ./datavizplatform-flask
       dockerfile: Dockerfile
