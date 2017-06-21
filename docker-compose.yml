@@ -16,7 +16,7 @@ services:
     ports:
       - '27017:27017'
 
-  flask:
+  airflow:
     build:
       context: ./datavizplatform-flask
       dockerfile: Dockerfile
@@ -24,16 +24,6 @@ services:
       - ./datavizplatform-flask:/home/user_python/app
     ports:
       - "8000:8000"
-
-  celery:
-    build:
-      context: ./datavizplatform-flask
-      dockerfile: Dockerfile
-    command:  celery -A app.celery worker -l info
-    volumes:
-      - ./datavizplatform-flask:/home/user_python/app
-    depends_on:
-     - redis
 
   meteor:
     build:
