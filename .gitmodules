@@ -1,3 +1,6 @@
 [submodule "datavizplatform-meteor"]
 	path = datavizplatform-meteor
 	url = https://github.com/fablabbcn/datavizplatform-meteor
+[submodule "datavizplatform-airflow"]
+	path = datavizplatform-airflow
+	url = https://github.com/fablabbcn/datavizplatform-airflow.git
