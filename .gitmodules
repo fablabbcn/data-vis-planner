@@ -1,6 +1,0 @@
-[submodule "datavizplatform-meteor"]
-	path = datavizplatform-meteor
-	url = https://github.com/fablabbcn/datavizplatform-meteor.git
-[submodule "datavizplatform-flask"]
-	path = datavizplatform-flask
-	url = https://github.com/fablabbcn/datavizplatform-flask.git
