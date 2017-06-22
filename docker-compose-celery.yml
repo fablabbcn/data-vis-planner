@@ -11,7 +11,7 @@ services:
     webserver:
         build:
           context: .
-          dockerfile: Dockerfile
+          dockerfile: Dockerfile-airflow
         depends_on:
             - postgres
             - redis
@@ -24,9 +24,12 @@ services:
         command: webserver
 
     flower:
-        image: puckel/docker-airflow:1.8.1
+        build:
+          context: .
+          dockerfile: Dockerfile-airflow
         depends_on:
             - redis
+            - webserver
         env_file:
             - ./environment.env
         ports:
@@ -34,7 +37,9 @@ services:
         command: flower
 
     scheduler:
-        image: puckel/docker-airflow:1.8.1
+        build:
+          context: .
+          dockerfile: Dockerfile-airflow
         depends_on:
             - webserver
         volumes:
@@ -44,9 +49,12 @@ services:
         command: scheduler
 
     worker:
-        image: puckel/docker-airflow:1.8.1
+        build:
+          context: .
+          dockerfile: Dockerfile-airflow
         depends_on:
             - scheduler
+            - webserver
         volumes:
             - ./airflow/dags:/usr/local/airflow/dags
         env_file:
