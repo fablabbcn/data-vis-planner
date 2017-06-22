@@ -7,9 +7,5 @@ user.email = 'admin@example.com'
 user.password = 'pass'
 session = settings.Session()
 session.add(user)
-user.username = 'test'
-user.email = 'test@example.com'
-user.password = 'pass'
-session.add(user)
 session.commit()
 session.close()

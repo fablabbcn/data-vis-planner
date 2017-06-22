@@ -4,7 +4,8 @@ services:
         image: 'redis:3.2.7'
 
     postgres:
-        image: postgres:9.6
+        image: sameersbn/postgresql:9.6-2
+        restart: always
         env_file:
             - ./environment.env
 
@@ -12,6 +13,7 @@ services:
         build:
           context: .
           dockerfile: Dockerfile
+        restart: always
         depends_on:
             - postgres
             - redis
@@ -25,6 +27,7 @@ services:
 
     flower:
         image: puckel/docker-airflow:1.8.1
+        restart: always
         depends_on:
             - redis
         env_file:
@@ -45,6 +48,7 @@ services:
 
     worker:
         image: puckel/docker-airflow:1.8.1
+        restart: always
         depends_on:
             - scheduler
         volumes:

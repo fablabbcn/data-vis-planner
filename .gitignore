@@ -1,0 +1,4 @@
+*.pyc
+*.db
+environment.env
+create_user.py
