@@ -9,14 +9,6 @@ services:
     ports:
       - '27017:27017'
 
-  airflow:
-   build:
-      context: ./datavizplatform-airflow
-   volumes:
-      - ./datavizplatform-airflow/
-   command:
-      - ./docker-compose -f docker-compose-celery.yml up --build
-
   meteor:
     build:
       context: ./datavizplatform-meteor
@@ -31,6 +23,61 @@ services:
       - 3000:3000
     environment:
       - "MONGO_URL=mongodb://mongo:27017/meteor"
+      
+      
+  # Airflow
+  redis:
+    image: 'redis:3.2.7'
+
+  postgres:
+    build:
+      context: ./datavizplatform-airflow
+      dockerfile: Dockerfile-postgres
+
+  webserver:
+    build:
+      context: ./datavizplatform-airflow
+      dockerfile: Dockerfile
+    depends_on:
+        - postgres
+        - redis
+    env_file:
+        - ./datavizplatform-airflow/environment.env
+    volumes:
+        - ./datavizplatform-airflow/dags:/usr/local/airflow/dags
+    ports:
+        - "8080:8080"
+    command: webserver
+
+  flower:
+    image: puckel/docker-airflow:1.8.1
+    depends_on:
+        - redis
+    env_file:
+        - ./datavizplatform-airflow/environment.env
+    ports:
+        - "5555:5555"
+    command: flower
+
+  scheduler:
+    image: puckel/docker-airflow:1.8.1
+    depends_on:
+        - webserver
+    volumes:
+        - ./datavizplatform-airflow/dags:/usr/local/airflow/dags
+    env_file:
+        - ./datavizplatform-airflow/environment.env
+    command: scheduler
+
+  worker:
+    image: puckel/docker-airflow:1.8.1
+    depends_on:
+        - scheduler
+    volumes:
+        - ./datavizplatform-airflow/dags:/usr/local/airflow/dags
+    env_file:
+        - ./datavizplatform-airflow/environment.env
+    command: worker
 
 volumes:
   mongo:
