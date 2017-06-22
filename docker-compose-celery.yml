@@ -4,9 +4,9 @@ services:
         image: 'redis:3.2.7'
 
     postgres:
-        image: postgres:9.6
-        env_file:
-            - ./environment.env
+        build:
+          context: .
+          dockerfile: Dockerfile-postgres
 
     webserver:
         build:
