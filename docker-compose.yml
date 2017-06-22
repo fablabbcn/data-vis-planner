@@ -1,13 +1,6 @@
 version: '2.0'
 
 services:
-  redis:
-    image: 'redis:3.0-alpine'
-    command: redis-server
-    volumes:
-      - 'redis:/var/lib/redis/data'
-    ports:
-      - '6379:6379'
 
   mongo:
     image: mongo:latest
@@ -17,13 +10,12 @@ services:
       - '27017:27017'
 
   airflow:
-    build:
-      context: ./datavizplatform-flask
-      dockerfile: Dockerfile
-    volumes:
-      - ./datavizplatform-flask:/home/user_python/app
-    ports:
-      - "8000:8000"
+   build:
+      context: ./datavizplatform-airflow
+   volumes:
+      - ./datavizplatform-airflow/
+   command:
+      - ./docker-compose -f docker-compose-celery.yml up --build
 
   meteor:
     build:
@@ -41,5 +33,4 @@ services:
       - "MONGO_URL=mongodb://mongo:27017/meteor"
 
 volumes:
-  redis:
   mongo:
