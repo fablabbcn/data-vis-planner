@@ -2,30 +2,36 @@ version: '2.0'
 
 services:
 
-  mongo:
-    image: mongo:latest
-    volumes:
-      - mongo:/data
-    ports:
-      - '27017:27017'
-
+  # Meteor
+  # Data visualizations
   meteor:
     build:
       context: ./datavizplatform-meteor
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-meteor
     volumes:
       - ./datavizplatform-meteor/app:/home/meteoruser/app
     depends_on:
       - mongo
+      - webserver
     links:
       - mongo
     ports:
       - 3000:3000
     environment:
       - "MONGO_URL=mongodb://mongo:27017/meteor"
-      
+
+  # Mongo
+  # Shared db between data visualizations and analyses
+  mongo:
+    image: mongo:latest
+    volumes:
+      - mongo:/data
+    ports:
+      - '27017:27017'
       
   # Airflow
+  # Data analyses
+  # Copied and modified from the submodule datavizplatform-airflow
   redis:
     image: 'redis:3.2.7'
 
@@ -37,10 +43,11 @@ services:
   webserver:
     build:
       context: ./datavizplatform-airflow
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-airflow
     depends_on:
         - postgres
         - redis
+        - mongo
     env_file:
         - ./datavizplatform-airflow/environment.env
     volumes:
@@ -50,9 +57,12 @@ services:
     command: webserver
 
   flower:
-    image: puckel/docker-airflow:1.8.1
+    build:
+      context: ./datavizplatform-airflow
+      dockerfile: Dockerfile-airflow
     depends_on:
         - redis
+        - webserver
     env_file:
         - ./datavizplatform-airflow/environment.env
     ports:
@@ -60,7 +70,9 @@ services:
     command: flower
 
   scheduler:
-    image: puckel/docker-airflow:1.8.1
+    build:
+      context: ./datavizplatform-airflow
+      dockerfile: Dockerfile-airflow
     depends_on:
         - webserver
     volumes:
@@ -70,9 +82,12 @@ services:
     command: scheduler
 
   worker:
-    image: puckel/docker-airflow:1.8.1
+    build:
+      context: ./datavizplatform-airflow
+      dockerfile: Dockerfile-airflow
     depends_on:
         - scheduler
+        - webserver
     volumes:
         - ./datavizplatform-airflow/dags:/usr/local/airflow/dags
     env_file:
@@ -81,3 +96,5 @@ services:
 
 volumes:
   mongo:
+  postgres:
+  redis:
