@@ -1,0 +1,18 @@
+FROM puckel/docker-airflow:1.8.1
+
+# Airflow
+ARG AIRFLOW_VERSION=1.8.1
+ARG AIRFLOW_HOME=/usr/local/airflow
+
+USER root
+RUN pip install apache-airflow[password]==$AIRFLOW_VERSION
+COPY ./entrypoint.sh /entrypoint.sh
+COPY ./requirements.txt /requirements.txt
+COPY ./create_user.py /create_user.py
+COPY ./airflow/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
+RUN pip install -r /requirements.txt
+RUN chmod +x /entrypoint.sh
+
+USER airflow
+WORKDIR ${AIRFLOW_HOME}
+ENTRYPOINT ["/entrypoint.sh"]

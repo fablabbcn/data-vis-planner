@@ -1,0 +1,62 @@
+version: '2'
+services:
+    redis:
+        image: 'redis:3.2.7'
+
+    postgres:
+        build:
+          context: .
+          dockerfile: Dockerfile-postgres
+
+    webserver:
+        build:
+          context: .
+          dockerfile: Dockerfile-airflow
+        depends_on:
+            - postgres
+            - redis
+        env_file:
+            - ./environment.env
+        volumes:
+            - ./airflow/dags:/usr/local/airflow/dags
+        ports:
+            - "8080:8080"
+        command: webserver
+
+    flower:
+        build:
+          context: .
+          dockerfile: Dockerfile-airflow
+        depends_on:
+            - redis
+            - webserver
+        env_file:
+            - ./environment.env
+        ports:
+            - "5555:5555"
+        command: flower
+
+    scheduler:
+        build:
+          context: .
+          dockerfile: Dockerfile-airflow
+        depends_on:
+            - webserver
+        volumes:
+            - ./airflow/dags:/usr/local/airflow/dags
+        env_file:
+            - ./environment.env
+        command: scheduler
+
+    worker:
+        build:
+          context: .
+          dockerfile: Dockerfile-airflow
+        depends_on:
+            - scheduler
+            - webserver
+        volumes:
+            - ./airflow/dags:/usr/local/airflow/dags
+        env_file:
+            - ./environment.env
+        command: worker
