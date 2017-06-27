@@ -48,6 +48,7 @@ services:
         - postgres
         - redis
         - mongo
+    restart: always
     env_file:
         - ./airflow/environment.env
     volumes:
@@ -60,11 +61,12 @@ services:
     build:
       context: ./airflow
       dockerfile: Dockerfile-airflow
+    restart: always
     depends_on:
         - redis
         - webserver
-    env_file:
-        - ./airflow/environment.env
+    environment:
+        - EXECUTOR=Celery
     ports:
         - "5555:5555"
     command: flower
@@ -73,6 +75,7 @@ services:
     build:
       context: ./airflow
       dockerfile: Dockerfile-airflow
+    restart: always
     depends_on:
         - webserver
     volumes:
@@ -85,6 +88,7 @@ services:
     build:
       context: ./airflow
       dockerfile: Dockerfile-airflow
+    restart: always
     depends_on:
         - scheduler
         - webserver
