@@ -6,10 +6,10 @@ services:
   # Data visualizations
   meteor:
     build:
-      context: ./datavizplatform-meteor
+      context: ./meteor
       dockerfile: Dockerfile-meteor
     volumes:
-      - ./datavizplatform-meteor/app:/home/meteoruser/app
+      - ./meteor/app:/home/meteoruser/app
     depends_on:
       - mongo
       - webserver
@@ -31,67 +31,67 @@ services:
       
   # Airflow
   # Data analyses
-  # Copied and modified from the submodule datavizplatform-airflow
+  # Copied and modified from the submodule airflow
   redis:
     image: 'redis:3.2.7'
 
   postgres:
     build:
-      context: ./datavizplatform-airflow
+      context: ./airflow
       dockerfile: Dockerfile-postgres
 
   webserver:
     build:
-      context: ./datavizplatform-airflow
+      context: ./airflow
       dockerfile: Dockerfile-airflow
     depends_on:
         - postgres
         - redis
         - mongo
     env_file:
-        - ./datavizplatform-airflow/environment.env
+        - ./airflow/environment.env
     volumes:
-        - ./datavizplatform-airflow/dags:/usr/local/airflow/dags
+        - ./airflow/dags:/usr/local/airflow/dags
     ports:
         - "8080:8080"
     command: webserver
 
   flower:
     build:
-      context: ./datavizplatform-airflow
+      context: ./airflow
       dockerfile: Dockerfile-airflow
     depends_on:
         - redis
         - webserver
     env_file:
-        - ./datavizplatform-airflow/environment.env
+        - ./airflow/environment.env
     ports:
         - "5555:5555"
     command: flower
 
   scheduler:
     build:
-      context: ./datavizplatform-airflow
+      context: ./airflow
       dockerfile: Dockerfile-airflow
     depends_on:
         - webserver
     volumes:
-        - ./datavizplatform-airflow/dags:/usr/local/airflow/dags
+        - ./airflow/dags:/usr/local/airflow/dags
     env_file:
-        - ./datavizplatform-airflow/environment.env
+        - ./airflow/environment.env
     command: scheduler
 
   worker:
     build:
-      context: ./datavizplatform-airflow
+      context: ./airflow
       dockerfile: Dockerfile-airflow
     depends_on:
         - scheduler
         - webserver
     volumes:
-        - ./datavizplatform-airflow/dags:/usr/local/airflow/dags
+        - ./airflow/dags:/usr/local/airflow/dags
     env_file:
-        - ./datavizplatform-airflow/environment.env
+        - ./airflow/environment.env
     command: worker
 
 volumes:
