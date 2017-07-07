@@ -6,7 +6,7 @@ services:
   # Data visualizations
   meteor:
     build:
-      context: ./meteor
+      context: ./meteor/app
       dockerfile: Dockerfile-meteor
     volumes:
       - ./meteor/app:/home/meteoruser/app
