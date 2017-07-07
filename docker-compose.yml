@@ -45,12 +45,14 @@ services:
       context: ./airflow
       dockerfile: Dockerfile-airflow
     depends_on:
-        - postgres
         - redis
         - mongo
+        - postgres
     restart: always
     env_file:
         - ./airflow/environment.env
+    environment:
+        - EXECUTOR=Celery
     volumes:
         - ./airflow/dags:/usr/local/airflow/dags
     ports:
@@ -64,7 +66,6 @@ services:
     restart: always
     depends_on:
         - redis
-        - webserver
     environment:
         - EXECUTOR=Celery
     ports:
@@ -82,6 +83,8 @@ services:
         - ./airflow/dags:/usr/local/airflow/dags
     env_file:
         - ./airflow/environment.env
+    environment:
+        - EXECUTOR=Celery
     command: scheduler
 
   worker:
@@ -91,11 +94,12 @@ services:
     restart: always
     depends_on:
         - scheduler
-        - webserver
     volumes:
         - ./airflow/dags:/usr/local/airflow/dags
     env_file:
         - ./airflow/environment.env
+    environment:
+        - EXECUTOR=Celery
     command: worker
 
 volumes:
