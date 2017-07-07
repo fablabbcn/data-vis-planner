@@ -13,4 +13,4 @@ try:
     session.commit()
     session.close()
 except:
-    pass
+    print "Error with adding the default admin user, user probably already existing."
