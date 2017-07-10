@@ -6,10 +6,10 @@ services:
   # Data visualizations
   meteor:
     build:
-      context: ./meteor
+      context: ./meteor/app
       dockerfile: Dockerfile-meteor
     volumes:
-      - ./meteor/app:/home/meteoruser/app
+      - .:/meteor/app/
     depends_on:
       - mongo
       - webserver
@@ -39,6 +39,8 @@ services:
     build:
       context: ./airflow
       dockerfile: Dockerfile-postgres
+    depends_on:
+      - webserver
 
   webserver:
     build:
@@ -47,7 +49,6 @@ services:
     depends_on:
         - redis
         - mongo
-        - postgres
     restart: always
     env_file:
         - ./airflow/environment.env
