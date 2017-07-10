@@ -9,7 +9,7 @@ services:
       context: ./meteor/app
       dockerfile: Dockerfile-meteor
     volumes:
-      - ./meteor/app:/home/meteoruser/app
+      - .:/meteor/app/
     depends_on:
       - mongo
       - webserver
