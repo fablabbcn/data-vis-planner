@@ -24,7 +24,7 @@ services:
   # Mongo
   # Shared db between data visualizations and analyses
   mongo:
-     container_name: "dataviz-mongo"
+    container_name: "dataviz-mongo"
     image: mongo:latest
     volumes:
       - mongo:/data
