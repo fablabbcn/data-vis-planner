@@ -1,4 +1,4 @@
-# datavizplatform-airflow
+# datavizplatform
 A Data Viz platform
 
 ## Instructions
