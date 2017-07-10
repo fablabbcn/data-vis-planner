@@ -58,6 +58,13 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       
+  watchtower:
+    image: centurylink/watchtower
+    container_name: "dataviz-portainer-watchtower"
+    command: --cleanup portainer-app
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      
   # Airflow
   # Data analyses
   # Copied and modified from the submodule airflow
