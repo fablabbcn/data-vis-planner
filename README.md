@@ -1,7 +1,7 @@
-# datavizplatform-airflow
-An Airflow for the Data Viz platform
+#datavizplatform-airflow
+An Data Viz platform
 
-## Instructions
+##Instructions
 
 - git clone https://github.com/fablabbcn/datavizplatform-infrastructure.git
 - docker-compose up --build
