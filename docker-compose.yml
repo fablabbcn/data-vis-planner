@@ -30,6 +30,7 @@ services:
       - '27017:27017'
       
   # Cloud9
+  # For editing Airflow DAGs
   cloud9:
     image: 'agungf/cloud9-ide'
     environment:
@@ -42,6 +43,14 @@ services:
     ports:
       - 8181:8181
       - 22
+      
+  # Portainer
+  # For managing containers
+  portainer:
+    image: portainer/portainer
+    ports:
+        - 9000:9000
+    command: -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
       
   # Airflow
   # Data analyses
@@ -71,7 +80,7 @@ services:
     volumes:
         - ./airflow/dags:/usr/local/airflow/dags
     ports:
-        - "8080:8080"
+        - 8080:8080
     command: webserver
 
   flower:
@@ -84,7 +93,7 @@ services:
     environment:
         - EXECUTOR=Celery
     ports:
-        - "5555:5555"
+        - 5555:5555
     command: flower
 
   scheduler:
