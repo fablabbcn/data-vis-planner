@@ -29,6 +29,20 @@ services:
     ports:
       - '27017:27017'
       
+  # Cloud9
+  cloud9:
+    image: 'agungf/cloud9-ide'
+    environment:
+      - ROOT_PASS=thesecrets
+      - C9_WORKSPACE=/usr/local/airflow/dags
+    depends_on:
+      - webserver
+    volumes_from:
+      - webserver
+    ports:
+      - 8181:8181
+      - 22
+      
   # Airflow
   # Data analyses
   # Copied and modified from the submodule airflow
