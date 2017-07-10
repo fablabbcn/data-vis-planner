@@ -22,8 +22,8 @@ if [ "$LOAD_EX" = "n" ]; then
 fi
 
 # Install custome python package if requirements.txt is present
-if [ -e "/requirements.txt" ]; then
-    $(which pip) install --user -r /requirements.txt
+if [ -e "/dags/requirements.txt" ]; then
+    $(which pip) install --user -r /dags/requirements.txt
 fi
 
 # Update airflow config - Fernet key

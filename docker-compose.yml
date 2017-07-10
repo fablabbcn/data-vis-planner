@@ -5,6 +5,7 @@ services:
   # Meteor
   # Data visualizations
   meteor:
+    container_name: "dataviz-meteor"
     build:
       context: ./meteor/app
       dockerfile: Dockerfile-meteor
@@ -23,6 +24,7 @@ services:
   # Mongo
   # Shared db between data visualizations and analyses
   mongo:
+     container_name: "dataviz-mongo"
     image: mongo:latest
     volumes:
       - mongo:/data
@@ -32,6 +34,7 @@ services:
   # Cloud9
   # For editing Airflow DAGs
   cloud9:
+    container_name: "dataviz-cloud9"
     image: 'agungf/cloud9-ide'
     environment:
       - ROOT_PASS=thesecrets
@@ -46,19 +49,24 @@ services:
       
   # Portainer
   # For managing containers
+  # https://github.com/portainer/portainer-compose
   portainer:
+    container_name: "dataviz-portainer"
     image: portainer/portainer
     ports:
         - 9000:9000
-    command: -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       
   # Airflow
   # Data analyses
   # Copied and modified from the submodule airflow
   redis:
+    container_name: "dataviz-redis"
     image: 'redis:3.2.7'
 
   postgres:
+    container_name: "dataviz-postgres"
     build:
       context: ./airflow
       dockerfile: Dockerfile-postgres
@@ -66,6 +74,7 @@ services:
       - webserver
 
   webserver:
+    container_name: "dataviz-airflow-webserver"
     build:
       context: ./airflow
       dockerfile: Dockerfile-airflow
@@ -84,6 +93,7 @@ services:
     command: webserver
 
   flower:
+    container_name: "dataviz-airflow-flower"
     build:
       context: ./airflow
       dockerfile: Dockerfile-airflow
@@ -97,6 +107,7 @@ services:
     command: flower
 
   scheduler:
+    container_name: "dataviz-airflow-scheduler"
     build:
       context: ./airflow
       dockerfile: Dockerfile-airflow
@@ -112,6 +123,7 @@ services:
     command: scheduler
 
   worker:
+    container_name: "dataviz-airflow-worker"
     build:
       context: ./airflow
       dockerfile: Dockerfile-airflow
