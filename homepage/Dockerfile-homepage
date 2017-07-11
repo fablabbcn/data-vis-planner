@@ -1,0 +1,12 @@
+# https://hub.docker.com/_/nginx/
+
+FROM nginx:alpine
+
+RUN apk --update add git nodejs && rm -rf /var/cache/apk/* && \
+    npm install -g bower grunt-cli && \
+    echo '{ "allow_root": true }' > /root/.bowerrc
+
+RUN bower install
+
+COPY . /usr/share/nginx/html
+

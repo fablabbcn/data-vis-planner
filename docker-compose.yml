@@ -2,6 +2,21 @@ version: '2.0'
 
 services:
 
+  # Homepage
+  homepage:
+    container_name: "dataviz-home"
+    build:
+      context: ./homepage
+      dockerfile: Dockerfile-homepage
+    #volumes:
+    #  - ./homepage:/etc/nginx/conf.d/homepage
+    ports:
+      - "8080:80"
+    environment:
+      #- NGINX_HOST=foobar.com
+      - NGINX_PORT=80
+    #command: "/bin/bash -c envsubst < /etc/nginx/conf.d/homepage > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+
   # Meteor
   # Data visualizations
   meteor:

@@ -1,2 +1,5 @@
 #Cloud9 config
 airflow/dags/.c9/
+
+#Bower
+homepage/bower_components/
