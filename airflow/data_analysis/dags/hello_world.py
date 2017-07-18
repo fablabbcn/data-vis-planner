@@ -6,6 +6,7 @@ from airflow.operators.python_operator import PythonOperator
 import requests
 
 import makerlabs
+import json
 
 def get_data():
     data = requests.get("https://api.fablabs.io/v0/labs.json").json()

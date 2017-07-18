@@ -106,8 +106,8 @@ services:
     environment:
         - EXECUTOR=Celery
     volumes:
-        - ./data_analysis/dags:/usr/local/airflow/dags
-        - ./data_analysis/:/usr/local/data_analysis
+        - ./airflow/data_analysis/dags:/usr/local/airflow/dags
+        - ./airflow/data_analysis/:/usr/local/data_analysis
     ports:
         - 8080:8080
     command: webserver
@@ -135,7 +135,7 @@ services:
     depends_on:
         - webserver
     volumes:
-        - ./data_analysis/dags:/usr/local/airflow/dags
+        - ./airflow/data_analysis/dags:/usr/local/airflow/dags
     env_file:
         - ./airflow/environment.env
     environment:
@@ -151,7 +151,7 @@ services:
     depends_on:
         - scheduler
     volumes:
-        - ./data_analysis/dags:/usr/local/airflow/dags
+        - ./airflow/data_analysis/dags:/usr/local/airflow/dags
     env_file:
         - ./airflow/environment.env
     environment:
