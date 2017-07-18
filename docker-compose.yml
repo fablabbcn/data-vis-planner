@@ -50,7 +50,7 @@ services:
     image: 'agungf/cloud9-ide'
     environment:
       - ROOT_PASS=thesecrets
-      - C9_WORKSPACE=/usr/local/airflow/dags
+      - C9_WORKSPACE=/usr/local/data_analysis
     depends_on:
       - webserver
     volumes_from:
@@ -106,7 +106,8 @@ services:
     environment:
         - EXECUTOR=Celery
     volumes:
-        - ./airflow/dags:/usr/local/airflow/dags
+        - ./data_analysis/dags:/usr/local/airflow/dags
+        - ./data_analysis/:/usr/local/data_analysis
     ports:
         - 8080:8080
     command: webserver
@@ -134,7 +135,7 @@ services:
     depends_on:
         - webserver
     volumes:
-        - ./airflow/dags:/usr/local/airflow/dags
+        - ./data_analysis/dags:/usr/local/airflow/dags
     env_file:
         - ./airflow/environment.env
     environment:
@@ -150,7 +151,7 @@ services:
     depends_on:
         - scheduler
     volumes:
-        - ./airflow/dags:/usr/local/airflow/dags
+        - ./data_analysis/dags:/usr/local/airflow/dags
     env_file:
         - ./airflow/environment.env
     environment:

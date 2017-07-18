@@ -1,5 +1,5 @@
 #Cloud9 config
-airflow/dags/.c9/
+data_analysis/.c9/
 
 #Bower of static homepage
 homepage/bower_components/
