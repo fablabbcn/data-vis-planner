@@ -56,7 +56,7 @@ services:
     ports:
         - 3300:3000
     environment:
-      - "MONGO_URL=mongodb://mongo:27017/meteor"
+      - "MONGO_URL=mongodb://mongo:27017"
       - "MONGOCLIENT_AUTH=true"
       - "MONGOCLIENT_USERNAME=admin"
       - "MONGOCLIENT_PASSWORD=password"
@@ -127,6 +127,8 @@ services:
     volumes:
         - ./airflow/data_analysis/dags:/usr/local/airflow/dags
         - ./airflow/data_analysis/:/usr/local/data_analysis
+    links:
+        - mongo
     ports:
         - 8080:8080
     command: webserver
@@ -143,6 +145,8 @@ services:
         - EXECUTOR=Celery
     ports:
         - 5555:5555
+    links:
+        - mongo
     command: flower
 
   scheduler:
@@ -159,6 +163,8 @@ services:
         - ./airflow/environment.env
     environment:
         - EXECUTOR=Celery
+    links:
+        - mongo
     command: scheduler
 
   worker:
@@ -175,6 +181,8 @@ services:
         - ./airflow/environment.env
     environment:
         - EXECUTOR=Celery
+    links:
+        - mongo
     command: worker
 
 volumes:
