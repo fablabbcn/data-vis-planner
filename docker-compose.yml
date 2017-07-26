@@ -38,10 +38,29 @@ services:
   mongo:
     container_name: "dataviz-mongo"
     image: mongo:latest
+    hostname: mongodb
     volumes:
       - mongo:/data
     ports:
       - 27017:27017
+
+  # Mongo UI admin 
+  mongoui:
+    container_name: "dataviz-mongo-ui"
+    image: mongoclient/mongoclient:latest
+    hostname: mongoclient
+    depends_on:
+      - mongo
+    volumes:
+      - mongo:/data
+    ports:
+        - 3300:3000
+    environment:
+      - "MONGO_URL=mongodb://mongo:27017/meteor"
+      - "MONGOCLIENT_AUTH=true"
+      - "MONGOCLIENT_USERNAME=admin"
+      - "MONGOCLIENT_PASSWORD=password"
+      - "MONGOCLIENT_DEFAULT_CONNECTION_URL=mongodb://mongo:27017"
       
   # Cloud9
   # For editing Airflow DAGs
