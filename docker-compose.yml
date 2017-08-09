@@ -44,7 +44,7 @@ services:
     ports:
       - 27017:27017
 
-  # Mongo UI admin 
+  # Mongo UI admin
   mongoui:
     container_name: "DataVisPlanner-mongo-ui"
     image: mongoclient/mongoclient:latest
@@ -61,7 +61,7 @@ services:
       - "MONGOCLIENT_USERNAME=admin"
       - "MONGOCLIENT_PASSWORD=password"
       - "MONGOCLIENT_DEFAULT_CONNECTION_URL=mongodb://mongo:27017"
-      
+
   # Cloud9
   # For editing Airflow DAGs
   cloud9:
@@ -77,7 +77,7 @@ services:
     ports:
       - 8181:8181
       - 22
-      
+
   # Portainer
   # For managing containers
   # https://github.com/portainer/portainer-compose
@@ -88,14 +88,14 @@ services:
         - 9000:9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      
+
   watchtower:
     image: centurylink/watchtower
     container_name: "DataVisPlanner-portainer-watchtower"
     command: --cleanup portainer-app
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      
+
   # Airflow
   # Data analyses
   # Copied and modified from the submodule airflow
@@ -110,6 +110,7 @@ services:
       dockerfile: Dockerfile-postgres
     depends_on:
       - webserver
+      - mongo
 
   webserver:
     container_name: "DataVisPlanner-airflow-webserver"
@@ -141,6 +142,7 @@ services:
     restart: always
     depends_on:
         - redis
+        - mongo
     environment:
         - EXECUTOR=Celery
     ports:
@@ -157,6 +159,7 @@ services:
     restart: always
     depends_on:
         - webserver
+        - mongo
     volumes:
         - ./airflow/data_analysis/dags:/usr/local/airflow/dags
     env_file:
@@ -175,6 +178,7 @@ services:
     restart: always
     depends_on:
         - scheduler
+        - mongo
     volumes:
         - ./airflow/data_analysis/dags:/usr/local/airflow/dags
     env_file:
