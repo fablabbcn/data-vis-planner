@@ -32,47 +32,77 @@ dag_name = "hello_world"
 
 # Connect to Mongo databases in the Docker compose
 # Database for this DAG
-connect(db=dag_name, host="mongodb://mongo:27017", alias="dag")
-# Database for the Meteor visualizations settings
-connect(
-    db="meteor_visualizations_list", host="mongodb://mongo:27017", alias="viz")
+connect(db="dags",
+        host="mongodb://mongo:27017",
+        alias="dag")
+
 
 # Collections schemas, using Mongoengine
-
+# Documentation here: http://mongoengine.org/
 
 # Document for raw data
 class Raw(Document):
     title = StringField(required=True, max_length=200)
-    data = DictField(required=True)
+    data = DictField()
     published = DateTimeField(default=datetime.now)
-    meta = {"db_alias": "dag", "collection": "raw"}
+    meta = {"collection": "raw"}
 
 
 # Document for data cleaned for Meteor
 class Clean(Document):
     title = StringField(required=True, max_length=200)
-    data = DictField(required=True)
+    data = DictField()
     published = DateTimeField(default=datetime.now)
-    meta = {"db_alias": "dag", "collection": "clean"}
+    meta = {"collection": "clean"}
 
 
 # Document for settings of the Meteor visualization
-class Viz(Document):
+class Vis(Document):
     title = StringField(required=True, max_length=200)
     published = DateTimeField(default=datetime.now)
+    data = DictField()
+    vis_type = StringField(required=True, max_length=200)
+    meta = {"collection": "meteor"}
+
+
+# Document for the DAG as a whole
+class DAG_Description(Document):
+    title = StringField(required=True, max_length=200)
+    raw_data = ReferenceField(Raw)
     clean_data = ReferenceField(Clean)
-    raw_data = ReferenceField(Clean)
-    meta = {"db_alias": "viz", "collection": "meteor_viz"}
+    meteor_data = ReferenceField(Vis)
+    published = DateTimeField(default=datetime.now)
+    meta = {"collection": "dags"}
+
+
+# Setup the collections for storing the data
+# Collections are created here in order to be available to all defs
+# Collection for raw data
+raw_content = Raw(title=dag_name + "_raw")
+raw_content.save()
+# Collection for clean data
+clean_content = Clean(title=dag_name + "_clean")
+clean_content.save()
+# Collection for Meteor data
+meteor_content = Vis(title=dag_name + "_meteor",
+                     vis_type="none")
+meteor_content.save()
+# Collection for DAG data
+dag_document = DAG_Description(title=dag_name,
+                               raw_data=raw_content,
+                               clean_data=clean_content,
+                               meteor_data=meteor_content)
+dag_document.save()
+
 
 # Setup the Python functions for the operators
-
 
 # This function loads data and saves it into the raw collection
 def first_def():
     # Get raw data from Fablabs.io, as an example
     data = fablabs_io.get_labs(format="dict")
     # Save raw data in the raw collection
-    raw_content = Raw(title=dag_name + "_raw", data=data)
+    raw_content.data = data
     raw_content.save()
     return "Data saved successfully."
 
@@ -80,34 +110,21 @@ def first_def():
 # This function loads raw data, transforms it for the visualization
 def second_def():
     # Load data from the raw collection
-    data = Raw.objects(title=dag_name + "_raw")[0]
-    # Clean the data for Meteor
-    clean_content = Clean(title=dag_name + "_clean", data={"data": len(data)})
+    data = raw_content.data
+    # Clean the data for the Meteor visualisation
+    clean_content.data = {"data": len(data)}
     clean_content.save()
-    # Save meteor-ready data in the viz collection
-    # db.viz.insert_one(data)
-    # Update the list of visualizations in Meteor
-    meteor_viz = Viz(title=dag_name + "_meteor",
-                     raw_data=data.id,
-                     clean_data=clean_content.id)
-    meteor_viz.save()
     return "Data prepared for the visualization successfully."
 
 
 # This function updates the list of visualizations in Meteor
 def third_def():
-    # Load data from the raw collection
-    data = Raw.objects(title=dag_name + "_raw")[0]
-    # Clean the data for Meteor
-    clean_content = Clean(title=dag_name + "_clean", data={"data": len(data)})
-    clean_content.save()
-    # Save meteor-ready data in the viz collection
-    # db.viz.insert_one(data)
+    # Load data from the clean collection
+    data = clean_content.data
     # Update the list of visualizations in Meteor
-    meteor_viz = Viz(title=dag_name + "_meteor",
-                     raw_data=data.id,
-                     clean_data=clean_content.id)
-    meteor_viz.save()
+    meteor_content.data = data
+    meteor_content.vis_type = "barchart"
+    meteor_content.save()
     return "Data prepared for the visualization successfully."
 
 # Setup the DAG
