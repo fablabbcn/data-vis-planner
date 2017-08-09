@@ -6,6 +6,7 @@
   "author": "Massimo Menichinelli",
   "license": "MIT",
   "dependencies": {
-    "bootstrap": "^3.3.7"
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.2.1"
   }
 }
