@@ -21,11 +21,11 @@ from airflow.models import Variable
 from datetime import datetime
 
 # Store and retrieve data in Mongo database
-from pymongo import MongoClient
 from mongoengine import *
 
 # Example: load data from Fablabs.io
 from makerlabs import fablabs_io
+
 
 # DAG name (for the DAG but also for the database)
 dag_name = "hello_world"
@@ -33,8 +33,8 @@ dag_name = "hello_world"
 # Connect to Mongo databases in the Docker compose
 # Database for this DAG
 connect(db="dags",
-        host="mongodb://mongo:27017",
-        alias="dag")
+        host="mongo:27017",
+        alias="default")
 
 
 # Collections schemas, using Mongoengine
@@ -144,7 +144,7 @@ def third_def():
 
 dag = DAG(dag_name,
           description="Simple template for DAGs",
-          schedule_interval="3 * * * *",
+          schedule_interval="@once",
           start_date=datetime(2017, 3, 20),
           catchup=False)
 
