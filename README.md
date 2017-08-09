@@ -1,4 +1,4 @@
-![homepage/img/datavisplanner_logo_100.png](homepage/img/datavisplanner_logo_100.png)
+![](homepage/img/datavisplanner_logo_100.png)
 
 
 A platform for planning data analyses and visualisations.
@@ -21,4 +21,5 @@ docker-compose up --build
 
 ## Credits
 
-![homepage/img/from_30.png](homepage/img/from_30.png)
+[![](homepage/img/from_30.png)](https://ec.europa.eu/digital-agenda/en/news/22-new-caps-projects-horizon-2020)
+
