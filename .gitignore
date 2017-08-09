@@ -1,8 +1,9 @@
 #Cloud9 config
 airflow/data_analysis/.c9/
 
-#Bower of static homepage
-homepage/bower_components/
+#Yarn of static homepage
+homepage/node_modules/
+homepage/yarn.lock
 
 #Python
 

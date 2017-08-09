@@ -1,0 +1,11 @@
+{
+  "name": "DataVisPlanner_Homepage",
+  "version": "1.0.0",
+  "description": "Static homepage for DataVisPlanner",
+  "main": "index.html",
+  "author": "Massimo Menichinelli",
+  "license": "MIT",
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}
