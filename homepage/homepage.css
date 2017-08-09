@@ -4,6 +4,9 @@
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700');
 /*For the visualisations (svg)*/
 @import url('https://fonts.googleapis.com/css?family=Fira+Sans:300,400,500');
+/*For Font Awesome*/
+@import 'node_modules/font-awesome/css/font-awesome.css';
+
 
 html
 {
@@ -744,16 +747,29 @@ textarea
     margin-top: 20px;
 }
 
-.technologysheet
+.navigate-content
 {
-    width: 80%;
-    margin: 100px auto auto auto;
-    padding: 30px;
+    margin: 5px;
+    padding: 10px;
 
+    cursor: pointer;
+    text-align: center;
+
+    color: #000;
     -webkit-border-radius: 10px;
        -moz-border-radius: 10px;
             border-radius: 10px;
-    background: #fff;
+    -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .175);
+       -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .175);
+            box-shadow: 0 0 5px 0 rgba(0, 0, 0, .175);
+}
+
+
+.navigate-content:hover
+{
+    -webkit-box-shadow: 0 0 6px 0 rgba(62, 102, 133, .575);
+       -moz-box-shadow: 0 0 6px 0 rgba(62, 102, 133, .575);
+            box-shadow: 0 0 6px 0 rgba(62, 102, 133, .575);
 }
 
 .col-platforms
@@ -778,6 +794,10 @@ textarea
 .lead
 {
     text-align: center;
+}
+
+#main-container {
+    margin-top: 100px;
 }
 
 

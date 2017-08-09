@@ -7,14 +7,16 @@
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         <meta name="description" content="">
         <meta name="author" content="">
-        <link rel="icon" href="../../favicon.ico">
+        <link rel="icon" href="favicon.ico">
         <title>Starter Template for Bootstrap</title>
         <!-- Bootstrap core CSS -->
         <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Custom styles for this template -->
-        <link href="homepage.css" rel="stylesheet">
+        <link rel="stylesheet" href="homepage.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]> <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script> <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script> <![endif]-->
+        <!-- Other NPM modules -->
+        <link href="node_modules/font-awesome/css/font-awesome.css" />
     </head>
     <body>
         <!-- Navbar Menu -->
@@ -45,11 +47,70 @@
             </div>
         </nav>
         <!-- Main container -->
-        <div class="container-fluid">
-            <div class="starter-template">
-                <h1>Bootstrap starter template</h1>
-                <p class="lead">Use this document as a way to quickly start any new project.<br>
-                    All you get is this text and a mostly barebones HTML document.</p>
+        <div class="container-fluid" id="main-container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <img class="img-responsive center-block" src="img/datavisplanner_logo_100.png"/>
+                    <p class="lead">
+                        Explore how future technology developments, platforms or trends will impact how makers will create, communicate, organize and might even do business ...
+                        <label go-to-route="route: about" class="label label-info label-button">Read more</label>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-4">
+                    <div class="navigate-content" go-to-route="route: trends">
+                        <div class="rounded-separator-h1-top"></div>
+                        <h1>
+                            <i class="fa fa-line-chart" aria-hidden="true"></i>
+                            Trends
+                        </h1>
+                        <div class="rounded-separator-h1-bottom"></div>
+                        <p>
+                            A list of the current
+                            <em>Trends</em>
+                            in technologies used by and affecting the Maker movement.
+                        </p>
+                        <img class="img-responsive center-block" src="#"/>
+                        <a href="#" go-to-route="route: trends" class="btn btn-default">Explore Trends</a>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <div class="navigate-content" go-to-route="route: platforms-page">
+                        <div class="rounded-separator-h1-top"></div>
+                        <h1>
+                            <i class="fa fa-th-large" aria-hidden="true"></i>
+                            Platforms
+                        </h1>
+                        <div class="rounded-separator-h1-bottom"></div>
+                        <p>
+                            A list of the current
+                            <em>Platforms</em>
+                            available for Maker initiatives to use for their projects.
+                        </p>
+                        <img class="img-responsive center-block" src="#"/>
+                        <a go-to-route="route: platforms-page" class="btn btn-default">Explore Platforms</a>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                    <div class="navigate-content" go-to-route="route: techradar">
+                        <div class="rounded-separator-h1-top"></div>
+                        <h1>
+                            <i class="fa fa-tachometer" aria-hidden="true"></i>
+                            Radar
+                        </h1>
+                        <div class="rounded-separator-h1-bottom"></div>
+                        <p>
+                            Explore how
+                            <em>Trends</em>
+                            and
+                            <em>Platforms</em>
+                            are connected and related to each other, and more.
+                        </p>
+                        <img class="img-responsive center-block" src="#"/>
+                        <a href="#" go-to-route="route: techradar" class="btn btn-default">Explore Radar</a>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- Footer -->
