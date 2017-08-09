@@ -4,7 +4,7 @@ services:
 
   # Static homepage
   homepage:
-    container_name: "dataviz-home"
+    container_name: "DataVisPlanner-home"
     build:
       context: ./homepage
       dockerfile: Dockerfile-homepage
@@ -17,7 +17,7 @@ services:
   # Meteor
   # Data visualizations
   meteor:
-    container_name: "dataviz-meteor"
+    container_name: "DataVisPlanner-meteor"
     build:
       context: ./meteor/app
       dockerfile: Dockerfile-meteor
@@ -36,7 +36,7 @@ services:
   # Mongo
   # Shared db between data visualizations and analyses
   mongo:
-    container_name: "dataviz-mongo"
+    container_name: "DataVisPlanner-mongo"
     image: mongo:latest
     hostname: mongodb
     volumes:
@@ -46,7 +46,7 @@ services:
 
   # Mongo UI admin 
   mongoui:
-    container_name: "dataviz-mongo-ui"
+    container_name: "DataVisPlanner-mongo-ui"
     image: mongoclient/mongoclient:latest
     hostname: mongoclient
     depends_on:
@@ -65,7 +65,7 @@ services:
   # Cloud9
   # For editing Airflow DAGs
   cloud9:
-    container_name: "dataviz-cloud9"
+    container_name: "DataVisPlanner-cloud9"
     image: 'agungf/cloud9-ide'
     environment:
       - ROOT_PASS=thesecrets
@@ -82,7 +82,7 @@ services:
   # For managing containers
   # https://github.com/portainer/portainer-compose
   portainer:
-    container_name: "dataviz-portainer"
+    container_name: "DataVisPlanner-portainer"
     image: portainer/portainer
     ports:
         - 9000:9000
@@ -91,7 +91,7 @@ services:
       
   watchtower:
     image: centurylink/watchtower
-    container_name: "dataviz-portainer-watchtower"
+    container_name: "DataVisPlanner-portainer-watchtower"
     command: --cleanup portainer-app
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -100,11 +100,11 @@ services:
   # Data analyses
   # Copied and modified from the submodule airflow
   redis:
-    container_name: "dataviz-redis"
+    container_name: "DataVisPlanner-redis"
     image: 'redis:3.2.7'
 
   postgres:
-    container_name: "dataviz-postgres"
+    container_name: "DataVisPlanner-postgres"
     build:
       context: ./airflow
       dockerfile: Dockerfile-postgres
@@ -112,7 +112,7 @@ services:
       - webserver
 
   webserver:
-    container_name: "dataviz-airflow-webserver"
+    container_name: "DataVisPlanner-airflow-webserver"
     build:
       context: ./airflow
       dockerfile: Dockerfile-airflow
@@ -134,7 +134,7 @@ services:
     command: webserver
 
   flower:
-    container_name: "dataviz-airflow-flower"
+    container_name: "DataVisPlanner-airflow-flower"
     build:
       context: ./airflow
       dockerfile: Dockerfile-airflow
@@ -150,7 +150,7 @@ services:
     command: flower
 
   scheduler:
-    container_name: "dataviz-airflow-scheduler"
+    container_name: "DataVisPlanner-airflow-scheduler"
     build:
       context: ./airflow
       dockerfile: Dockerfile-airflow
@@ -168,7 +168,7 @@ services:
     command: scheduler
 
   worker:
-    container_name: "dataviz-airflow-worker"
+    container_name: "DataVisPlanner-airflow-worker"
     build:
       context: ./airflow
       dockerfile: Dockerfile-airflow
