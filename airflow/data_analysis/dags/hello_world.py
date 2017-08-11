@@ -99,6 +99,7 @@ dag_document.save()
 
 # This function loads data and saves it into the raw collection
 def first_def():
+    global raw_content
     # Get raw data from Fablabs.io, as an example
     data = fablabs_io.get_labs(format="dict")
     # Save raw data in the raw collection
@@ -109,6 +110,8 @@ def first_def():
 
 # This function loads raw data, transforms it for the visualization
 def second_def():
+    global raw_content
+    global clean_content
     # Load data from the raw collection
     data = raw_content.data
     # Clean the data for the Meteor visualisation
@@ -119,6 +122,8 @@ def second_def():
 
 # This function updates the list of visualizations in Meteor
 def third_def():
+    global clean_content
+    global meteor_content
     # Load data from the clean collection
     data = clean_content.data
     # Update the list of visualizations in Meteor
@@ -145,8 +150,9 @@ def third_def():
 dag = DAG(dag_name,
           description="Simple template for DAGs",
           schedule_interval="@once",
-          start_date=datetime(2017, 3, 20),
-          catchup=False)
+          start_date=datetime(2017, 8, 10, 11, 35),
+          catchup=False
+          )
 
 # Setup the operators of the DAG
 first_operator = PythonOperator(
