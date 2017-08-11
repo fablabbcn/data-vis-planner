@@ -11,6 +11,8 @@
 # Import various airflow modules
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
+from airflow.operators.bash_operator import BashOperator
+from airflow.hooks.postgres_hook import PostgresHook
 # Load variables stored in Airflow
 # for passwords, access to databases, API keys and so on...
 from airflow.models import Variable
@@ -19,9 +21,8 @@ from airflow.models import Variable
 
 # Work with time
 from datetime import datetime
-
-# Store and retrieve data in Mongo database
-from mongoengine import *
+# Work with JSON
+import json
 
 # Example: load data from Fablabs.io
 from makerlabs import fablabs_io
@@ -29,108 +30,31 @@ from makerlabs import fablabs_io
 
 # DAG name (for the DAG but also for the database)
 dag_name = "hello_world"
-
-# Connect to Mongo databases in the Docker compose
-# Database for this DAG
-connect(db="dags",
-        host="mongo:27017",
-        alias="default")
-
-
-# Collections schemas, using Mongoengine
-# Documentation here: http://mongoengine.org/
-
-# Document for raw data
-class Raw(Document):
-    title = StringField(required=True, max_length=200)
-    data = DictField()
-    published = DateTimeField(default=datetime.now)
-    meta = {"collection": "raw"}
-
-
-# Document for data cleaned for Meteor
-class Clean(Document):
-    title = StringField(required=True, max_length=200)
-    data = DictField()
-    published = DateTimeField(default=datetime.now)
-    meta = {"collection": "clean"}
-
-
-# Document for settings of the Meteor visualization
-class Vis(Document):
-    title = StringField(required=True, max_length=200)
-    published = DateTimeField(default=datetime.now)
-    data = DictField()
-    vis_type = StringField(required=True, max_length=200)
-    meta = {"collection": "meteor"}
-
-
-# Document for the DAG as a whole
-class DAG_Description(Document):
-    title = StringField(required=True, max_length=200)
-    raw_data = ReferenceField(Raw)
-    clean_data = ReferenceField(Clean)
-    meteor_data = ReferenceField(Vis)
-    published = DateTimeField(default=datetime.now)
-    meta = {"collection": "dags"}
-
-
-# Setup the collections for storing the data
-# Collections are created here in order to be available to all defs
-# Collection for raw data
-raw_content = Raw(title=dag_name + "_raw")
-raw_content.save()
-# Collection for clean data
-clean_content = Clean(title=dag_name + "_clean")
-clean_content.save()
-# Collection for Meteor data
-meteor_content = Vis(title=dag_name + "_meteor",
-                     vis_type="none")
-meteor_content.save()
-# Collection for DAG data
-dag_document = DAG_Description(title=dag_name,
-                               raw_data=raw_content,
-                               clean_data=clean_content,
-                               meteor_data=meteor_content)
-dag_document.save()
-
+pg_hook = PostgresHook(postgres_conn_id='postgres_data')
+table_raw_name = dag_name+"_raw"
 
 # Setup the Python functions for the operators
 
 # This function loads data and saves it into the raw collection
 def first_def():
-    global raw_content
+    global table_raw_name
+    global pg_hook
     # Get raw data from Fablabs.io, as an example
     data = fablabs_io.get_labs(format="dict")
-    # Save raw data in the raw collection
-    raw_content.data = data
-    raw_content.save()
+    pg_command = """CREATE TABLE IF NOT EXISTS %s ( id integer NOT NULL, board_id integer NOT NULL, data jsonb );"""
+    pg_hook.run(pg_command, parameters=[table_raw_name])
+    pg_command = """INSERT INTO %s VALUES ( %s );"""
+    # Transform the dict into a string for PostgreSQL
+    data2 = json.dumps(data)
+    pg_hook.run(pg_command, parameters=[table_raw_name, data2])
     return "Data saved successfully."
 
-
-# This function loads raw data, transforms it for the visualization
+# This function cleans raw data, transforms it for the visualization
 def second_def():
-    global raw_content
-    global clean_content
     # Load data from the raw collection
-    data = raw_content.data
     # Clean the data for the Meteor visualisation
-    clean_content.data = {"data": len(data)}
-    clean_content.save()
     return "Data prepared for the visualization successfully."
 
-
-# This function updates the list of visualizations in Meteor
-def third_def():
-    global clean_content
-    global meteor_content
-    # Load data from the clean collection
-    data = clean_content.data
-    # Update the list of visualizations in Meteor
-    meteor_content.data = data
-    meteor_content.vis_type = "barchart"
-    meteor_content.save()
-    return "Data prepared for the visualization successfully."
 
 # Setup the DAG
 #
@@ -149,20 +73,29 @@ def third_def():
 
 dag = DAG(dag_name,
           description="Simple template for DAGs",
-          schedule_interval="@once",
-          start_date=datetime(2017, 8, 10, 11, 35),
+          schedule_interval="@hourly",
+          start_date=datetime(2017, 8, 11, 14, 05),
           catchup=False
           )
 
 # Setup the operators of the DAG
 first_operator = PythonOperator(
-    task_id="hello_task_01", python_callable=first_def, dag=dag)
+    task_id="hello_task_01",
+    python_callable=first_def,
+    dag=dag)
 
-second_operator = PythonOperator(
-    task_id="hello_task_02", python_callable=second_def, dag=dag)
+# second_operator = PythonOperator(
+#     task_id="hello_task_02", python_callable=second_def, dag=dag)
+#
+# third_operator = PythonOperator(
+#     task_id="hello_task_03", python_callable=third_def, dag=dag)
 
-third_operator = PythonOperator(
-    task_id="hello_task_03", python_callable=third_def, dag=dag)
+fourth_operator = BashOperator(
+    task_id='postgres2mongo',
+    bash_command='python /usr/local/airflow/dags/postgres2mongo.py',
+    dag=dag)
+
 
 # Setup the flow of operators in the DAG
-first_operator >> second_operator >> third_operator
+# first_operator >> second_operator >> third_operator
+first_operator << fourth_operator
