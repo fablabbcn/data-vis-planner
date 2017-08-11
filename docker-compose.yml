@@ -154,6 +154,7 @@ services:
         - 5555:5555
     links:
         - mongo
+        - postgres
     command: flower
 
   scheduler:
