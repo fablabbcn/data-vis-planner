@@ -108,8 +108,11 @@ services:
     build:
       context: ./airflow
       dockerfile: Dockerfile-postgres
+    ports:
+        - 5432:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
     depends_on:
-      - webserver
       - mongo
 
   webserver:
@@ -120,6 +123,7 @@ services:
     depends_on:
         - redis
         - mongo
+        - postgres
     restart: always
     env_file:
         - ./airflow/environment.env
@@ -130,6 +134,7 @@ services:
         - ./airflow/data_analysis/:/usr/local/data_analysis
     links:
         - mongo
+        - postgres
     ports:
         - 8080:8080
     command: webserver
@@ -168,6 +173,7 @@ services:
         - EXECUTOR=Celery
     links:
         - mongo
+        - postgres
     command: scheduler
 
   worker:
@@ -187,20 +193,21 @@ services:
         - EXECUTOR=Celery
     links:
         - mongo
+        - postgres
     command: worker
 
-  nifi:
-    container_name: "DataVisPlanner-nifi"
-    build:
-      context: ./nifi
-      dockerfile: Dockerfile-nifi
-    depends_on:
-      - mongo
-    restart: always
-    links:
-      - mongo
-    ports:
-      - 8445:80
+  # nifi:
+  #   container_name: "DataVisPlanner-nifi"
+  #   build:
+  #     context: ./nifi
+  #     dockerfile: Dockerfile-nifi
+  #   depends_on:
+  #     - mongo
+  #   restart: always
+  #   links:
+  #     - mongo
+  #   ports:
+  #     - 8445:80
 
 volumes:
   mongo:
