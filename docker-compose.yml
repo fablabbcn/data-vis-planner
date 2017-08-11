@@ -189,6 +189,19 @@ services:
         - mongo
     command: worker
 
+  nifi:
+    container_name: "DataVisPlanner-nifi"
+    build:
+      context: ./nifi
+      dockerfile: Dockerfile-nifi
+    depends_on:
+      - mongo
+    restart: always
+    links:
+      - mongo
+    ports:
+      - 8445:80
+
 volumes:
   mongo:
   postgres:

@@ -1,0 +1,13 @@
+FROM xemuliam/nifi
+
+# Add Python
+RUN apk add --update \
+    python \
+    python-dev \
+    py-pip \
+    build-base \
+  && pip install virtualenv \
+  && rm -rf /var/cache/apk/*
+
+RUN set -x \
+        && sed -i -e "s|^nifi.web.http.port=.*$|nifi.web.http.port=8445|" conf/nifi.properties
