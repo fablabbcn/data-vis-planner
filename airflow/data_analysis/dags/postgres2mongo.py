@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 #
-# Template for Airflow DAGS
+# PostgreSQL to Mongo data export for the Meteor visualisations
 #
 # Author: Massimo Menichinelli
 # E-mail: info@openp2pdesign.org - massimo@fablabbcn.org
@@ -64,6 +64,7 @@ def cli(args):
                 clean_data=data[0][2],
                 vis_type=str(data[0][3]),
                 vis_notes=str(data[0][4]))
+            
             # Save the document
             dag_document.save()
 
