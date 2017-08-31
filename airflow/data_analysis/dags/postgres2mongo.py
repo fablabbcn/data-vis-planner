@@ -8,116 +8,68 @@
 #
 #
 
-
+# Command line arguments
+import sys
+import getopt
 # Work with time
 from datetime import datetime
-
 # Store and retrieve data in Mongo database
-from mongoengine import *
+import mongoengine
+# PostgreSQL hook from Airflow
+from airflow.hooks.postgres_hook import PostgresHook
+# Logging messages to Airflow
+import logging
 
 
-# DAG name (for the DAG but also for the database)
-dag_name = "hello_world"
-
-# Connect to Mongo databases in the Docker compose
-# Database for this DAG
-connect(db="dags",
-        host="mongo:27017",
-        alias="default")
-
-# Collections schemas, using Mongoengine
+# Collections schemas using Mongoengine
 # Documentation here: http://mongoengine.org/
-
-# Document for raw data
-class Raw(Document):
-    title = StringField(required=True, max_length=200)
-    data = DictField()
-    published = DateTimeField(default=datetime.now)
-    meta = {"collection": "raw"}
-
-
-# Document for data cleaned for Meteor
-class Clean(Document):
-    title = StringField(required=True, max_length=200)
-    data = DictField()
-    published = DateTimeField(default=datetime.now)
-    meta = {"collection": "clean"}
-
-
-# Document for settings of the Meteor visualization
-class Vis(Document):
-    title = StringField(required=True, max_length=200)
-    published = DateTimeField(default=datetime.now)
-    data = DictField()
-    vis_type = StringField(required=True, max_length=200)
-    meta = {"collection": "meteor"}
-
-
 # Document for the DAG as a whole
-class DAG_Description(Document):
-    title = StringField(required=True, max_length=200)
-    raw_data = ReferenceField(Raw)
-    clean_data = ReferenceField(Clean)
-    meteor_data = ReferenceField(Vis)
-    published = DateTimeField(default=datetime.now)
+class DAG_Description(mongoengine.Document):
+    title = mongoengine.StringField(required=True, max_length=200)
+    raw_data = mongoengine.DictField()
+    clean_data = mongoengine.DictField()
+    vis_type = mongoengine.StringField(required=True, max_length=200)
+    vis_notes = mongoengine.StringField(max_length=200)
+    published = mongoengine.DateTimeField(default=datetime.now)
     meta = {"collection": "dags"}
 
 
-# Setup the collections for storing the data
-# Collections are created here in order to be available to all defs
-# Collection for raw data
-raw_content = Raw(title=dag_name + "_raw")
-raw_content.save()
-# Collection for clean data
-clean_content = Clean(title=dag_name + "_clean")
-clean_content.save()
-# Collection for Meteor data
-meteor_content = Vis(title=dag_name + "_meteor",
-                     vis_type="none")
-meteor_content.save()
-# Collection for DAG data
-dag_document = DAG_Description(title=dag_name,
-                               raw_data=raw_content,
-                               clean_data=clean_content,
-                               meteor_data=meteor_content)
-dag_document.save()
+# This function parses the command line argument and handle data accordingly
+def cli(args):
+    try:
+        opts, args = getopt.getopt(args, "i:", ["id=", ])
+    except getopt.GetoptError:
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print('A simple script for loading data from PostgreSQL to Mongo')
+            sys.exit()
+        elif opt in ("-i", "--id"):
+            row_id = arg
+
+            # Connection to the PostgreSQL, to be defined in the Airflow UI
+            pg_hook = PostgresHook(postgres_conn_id="postgres_data")
+
+            # Retrieve the data stored in PostgreSQL
+            pg_command = """SELECT * FROM dag_dag WHERE id = %s"""
+            data = pg_hook.get_records(pg_command, parameters=[row_id])
+
+            # Connect to Mongo databases in the Docker compose
+            mongoengine.connect(db="dags", host="mongo:27017", alias="default")
+
+            # Setup the document for storing the data
+            dag_document = DAG_Description(
+                title=row_id,
+                raw_data=data[0][1],
+                clean_data=data[0][2],
+                vis_type=str(data[0][3]),
+                vis_notes=str(data[0][4]))
+            # Save the document
+            dag_document.save()
+
+            # Return the success message
+            logging.info("Data exporte from PostgreSQL to Mongo successfully.")
 
 
-# This function loads data and saves it into the raw collection
-def first_def():
-    # global raw_content
-    # Get raw data from Fablabs.io, as an example
-    data = fablabs_io.get_labs(format="dict")
-    # Save raw data in the raw collection
-    raw_content.data = data
-    raw_content.save()
-    return "Data saved successfully."
-
-
-# This function loads raw data, transforms it for the visualization
-def second_def():
-    global raw_content
-    global clean_content
-    # Load data from the raw collection
-    data = raw_content.data
-    # Clean the data for the Meteor visualisation
-    clean_content.data = {"data": len(data)}
-    clean_content.save()
-    return "Data prepared for the visualization successfully."
-
-
-# This function updates the list of visualizations in Meteor
-def third_def():
-    global clean_content
-    global meteor_content
-    # Load data from the clean collection
-    data = clean_content.data
-    # Update the list of visualizations in Meteor
-    meteor_content.data = data
-    meteor_content.vis_type = "barchart"
-    meteor_content.save()
-    return "Data prepared for the visualization successfully."
-
-
-raw_content.data = {"data": "testing save functionality with mongodb"}
-raw_content.save()
+if __name__ == '__main__':
+    cli(sys.argv[1:])

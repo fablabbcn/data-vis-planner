@@ -32,7 +32,7 @@ from makerlabs import fablabs_io
 # DAG name (for the DAG but also for the database)
 dag_name = "hello_world_template"
 # Connection to the PostgreSQL, to be defined in the Airflow UI
-pg_hook = PostgresHook(postgres_conn_id='postgres_data')
+pg_hook = PostgresHook(postgres_conn_id="postgres_data")
 
 
 # Setup the Python functions for the operators
@@ -55,6 +55,8 @@ def setup_db(**kwargs):
     $$ language 'plpgsql';"""
     pg_hook.run(pg_command)
     # A trigger for calling the above function
+    pg_command = """DROP TRIGGER IF EXISTS update_column ON dag_dag"""
+    pg_hook.run(pg_command)
     pg_command = """CREATE TRIGGER update_column BEFORE UPDATE ON dag_dag FOR EACH ROW EXECUTE PROCEDURE update_at_function();"""
     pg_hook.run(pg_command)
     # Check if a row with the same id exists
@@ -69,6 +71,8 @@ def setup_db(**kwargs):
             new_id = dag_name + str(int(previous_dags_same_name[-1][-1]) + 1)
         else:
             new_id = dag_name + "1"
+    else:
+        new_id = dag_name
     # Return the updated id name
     return new_id
 
@@ -76,8 +80,8 @@ def setup_db(**kwargs):
 # This function loads data and saves it into the raw collection
 def get_raw_data(**kwargs):
     global pg_hook
-    ti = kwargs['ti']
-    new_id = ti.xcom_pull(task_ids='hello_task_01')
+    ti = kwargs["ti"]
+    new_id = ti.xcom_pull(task_ids="hello_task_01")
     # Get raw data from Fablabs.io, as an example
     data = fablabs_io.get_labs(format="dict")
     # Transform the dict into a string for PostgreSQL
@@ -91,8 +95,8 @@ def get_raw_data(**kwargs):
 # This function cleans raw data, transforms it for the visualisation
 def clean_data(**kwargs):
     global pg_hook
-    ti = kwargs['ti']
-    new_id = ti.xcom_pull(task_ids='hello_task_01')
+    ti = kwargs["ti"]
+    new_id = ti.xcom_pull(task_ids="hello_task_01")
     # Load data from the raw_data column, it's only 1 value
     pg_command = """SELECT raw_data FROM dag_dag WHERE id = %s"""
     data = pg_hook.get_records(pg_command, parameters=[new_id])[0][0]
@@ -152,11 +156,11 @@ third_operator = PythonOperator(
     provide_context=True,
     dag=dag)
 
-# fourth_operator = BashOperator(
-#     task_id='postgres2mongo',
-#     bash_command='python /usr/local/airflow/dags/postgres2mongo.py' + " " +
-#     dag_name,
-#     dag=dag)
+fourth_operator = BashOperator(
+    task_id="postgres2mongo",
+    bash_command="python /usr/local/airflow/dags/postgres2mongo.py" + " --id=" +
+    "{{ ti.xcom_pull('hello_task_01') }}",
+    dag=dag)
 
 # Setup the flow of operators in the DAG
-first_operator >> second_operator >> third_operator
+first_operator >> second_operator >> third_operator >> fourth_operator
