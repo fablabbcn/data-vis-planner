@@ -27,13 +27,12 @@ services:
       - .:/meteor/app/
     depends_on:
       - mongo
-      - webserver
     links:
       - mongo
     ports:
       - 3000:3000
     environment:
-      - "MONGO_URL=mongodb://mongo:27017/meteor"
+      - "MONGO_URL=mongodb://mongo:27017/dags"
 
 
   # --- DATABASES ---
