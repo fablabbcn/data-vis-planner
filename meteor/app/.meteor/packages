@@ -19,3 +19,4 @@ shell-server@0.2.4            # Server-side component of the `meteor shell` comm
 iron:router
 dynamic-import@0.1.1
 npm-bcrypt@0.9.3
+msavin:mongol
