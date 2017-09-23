@@ -16,15 +16,18 @@ TRY_LOOP="20"
 
 : ${FERNET_KEY:=$(python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)")}
 
-# Load DAGs exemples (default: Yes)
+# Load DAGs examples (default: Yes)
 if [ "$LOAD_EX" = "n" ]; then
     sed -i "s/load_examples = True/load_examples = False/" "$AIRFLOW_HOME"/airflow.cfg
 fi
 
 # Install custome python package if requirements.txt is present
 if [ -e "/dags/requirements.txt" ]; then
-    $(which pip) install --user -r /dags/requirements.txt
+    $(which pip) install --user -r /usr/local/airflow/dags/requirements.txt
 fi
+
+# Automatically install python modules when requirements.txt changes
+nohup when-changed /usr/local/airflow/dags/requirements.txt pip install --user -r /usr/local/airflow/dags/requirements.txt &
 
 # Update airflow config - Fernet key
 sed -i "s|\$FERNET_KEY|$FERNET_KEY|" "$AIRFLOW_HOME"/airflow.cfg

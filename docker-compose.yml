@@ -103,7 +103,7 @@ services:
     image: agungf/cloud9-ide
     environment:
       - ROOT_PASS=thesecrets
-      - C9_WORKSPACE=/usr/local/data_analysis
+      - C9_WORKSPACE=/usr/local/airflow/dags
     depends_on:
       - webserver
     volumes_from:
@@ -132,7 +132,6 @@ services:
         - EXECUTOR=Celery
     volumes:
         - ./airflow/data_analysis/dags:/usr/local/airflow/dags
-        - ./airflow/data_analysis/:/usr/local/data_analysis
     links:
         - mongo
         - postgres
@@ -197,19 +196,6 @@ services:
         - mongo
         - postgres
     command: worker
-
-  # nifi:
-  #   container_name: "DataVisPlanner-nifi"
-  #   build:
-  #     context: ./nifi
-  #     dockerfile: Dockerfile-nifi
-  #   depends_on:
-  #     - mongo
-  #   restart: always
-  #   links:
-  #     - mongo
-  #   ports:
-  #     - 8445:80
 
 
   # --- MANAGEMENT ---

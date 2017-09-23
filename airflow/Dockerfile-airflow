@@ -1,18 +1,31 @@
 FROM puckel/docker-airflow:1.8.1
 
-# Airflow
+# Airflow configuration
 ARG AIRFLOW_VERSION=1.8.1
 ARG AIRFLOW_HOME=/usr/local/airflow
 
+# Root user
 USER root
+
+# Install nano for editing
+RUN apt-get update
+RUN apt-get install nano
+
+# Install custom airflow
 RUN pip install apache-airflow[password]==$AIRFLOW_VERSION
 COPY ./entrypoint.sh /entrypoint.sh
-COPY ./data_analysis/requirements.txt /dags/requirements.txt
+COPY ./data_analysis/dags/. /usr/local/airflow/dags/
 COPY ./create_user.py /create_user.py
 COPY ./airflow/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
-RUN pip install -r /dags/requirements.txt
+RUN pip install -r /usr/local/airflow/dags/requirements.txt
 RUN chmod +x /entrypoint.sh
 
+# Automatically install python modules when requirements.txt changes
+RUN pip install when-changed
+
+# Airflow user
 USER airflow
+
+# Launch airflow
 WORKDIR ${AIRFLOW_HOME}
 ENTRYPOINT ["/entrypoint.sh"]
