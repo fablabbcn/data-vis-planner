@@ -43,7 +43,7 @@ def setup_db(**kwargs):
     global pg_hook
     global dag_name
     # Create the dag_dag table for storing all the data
-    pg_command = """CREATE TABLE IF NOT EXISTS dag_dag ( id CHAR(50) PRIMARY KEY, raw_data jsonb, clean_data jsonb, type CHAR(50), notes varchar(200), created_at timestamp DEFAULT NOW(), updated_at timestamp DEFAULT NOW() );"""
+    pg_command = """CREATE TABLE IF NOT EXISTS dag_dag ( id CHAR(50) PRIMARY KEY, raw_data jsonb, clean_data jsonb, type CHAR(50), title varchar(120), text varchar(400), created_at timestamp DEFAULT NOW(), updated_at timestamp DEFAULT NOW() );"""
     pg_hook.run(pg_command)
     # A function for updating the updated_at column at each UPDATE
     pg_command = """CREATE OR REPLACE FUNCTION update_at_function()

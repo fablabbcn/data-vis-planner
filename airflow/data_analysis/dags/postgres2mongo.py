@@ -25,12 +25,13 @@ import logging
 # Documentation here: http://mongoengine.org/
 # Document for the DAG as a whole
 class DAG_Description(mongoengine.Document):
-    title = mongoengine.StringField(required=True, max_length=200)
+    dag_name = mongoengine.StringField(required=True, max_length=200)
     raw_data = mongoengine.DictField()
     clean_data = mongoengine.DictField()
     vis_type = mongoengine.StringField(required=True, max_length=200)
-    vis_notes = mongoengine.StringField(max_length=200)
-    published = mongoengine.DateTimeField(default=datetime.now)
+    title = mongoengine.StringField(max_length=120)
+    vis_text = mongoengine.StringField(max_length=400)
+    updated_at = mongoengine.DateTimeField(default=datetime.now)
     meta = {"collection": "dags"}
 
 
@@ -59,12 +60,13 @@ def cli(args):
 
             # Setup the document for storing the data
             dag_document = DAG_Description(
-                title=row_id,
+                dag_name=row_id,
                 raw_data=data[0][1],
                 clean_data=data[0][2],
                 vis_type=str(data[0][3]),
-                vis_notes=str(data[0][4]))
-            
+                vis_title=str(data[0][4]),
+                vis_text=str(data[0][5]))
+
             # Save the document
             dag_document.save()
 
