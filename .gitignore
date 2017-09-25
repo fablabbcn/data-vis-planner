@@ -1,5 +1,6 @@
 #Cloud9 config
 airflow/data_analysis/.c9/
+airflow/data_analysis/dags/.c9/
 
 #Yarn of static homepage
 homepage/node_modules/
