@@ -36,7 +36,6 @@ class Twitter_Stream(mongoengine.Document):
     dag_name = mongoengine.StringField(required=True, max_length=200)
     twitter_query = mongoengine.StringField()
     raw_data = mongoengine.ListField(mongoengine.DictField())
-    clean_data = mongoengine.ListField(mongoengine.DictField())
     vis_type = mongoengine.StringField(required=True, max_length=200)
     vis_title = mongoengine.StringField(max_length=120)
     vis_text = mongoengine.StringField(max_length=400)
@@ -59,11 +58,11 @@ def cli(args):
             row_id = arg
 
             # Connection to the PostgreSQL, to be defined in the Airflow UI
-            # pg_hook = PostgresHook(postgres_conn_id="postgres_data")
+            pg_hook = PostgresHook(postgres_conn_id="postgres_data")
 
             # Retrieve the data stored in PostgreSQL
-            # pg_command = """SELECT * FROM dag_dag WHERE id = %s"""
-            # data = pg_hook.get_records(pg_command, parameters=[row_id])
+            pg_command = """SELECT * FROM dag_dag WHERE id = %s"""
+            data = pg_hook.get_records(pg_command, parameters=[row_id])
 
             # Connect to Mongo databases in the Docker compose
             mongoengine.connect(db="dags", host="mongo:27017", alias="default")
@@ -87,7 +86,7 @@ def cli(args):
                 OAUTH_TOKEN, OAUTH_SECRET, CONSUMER_KEY, CONSUMER_SECRET))
 
             # Filter the Twitter Stream
-            iterator = twitter_stream.statuses.filter(track="python")
+            iterator = twitter_stream.statuses.filter(track=str(data[0][1]))
 
             # The task ends only manually, so we just log this message
             logging.info("Twitter Stream started successfully.")
@@ -106,16 +105,15 @@ def cli(args):
                     dag_document = Twitter_Stream(
                         dag_name=row_id,
                         raw_data=[json_dict],
-                        clean_data=[json_dict],
-                        vis_type="twitter_stream",
-                        vis_title="str(data[0][4])",
-                        vis_text="str(data[0][5])")
+                        vis_type=str(data[0][2]),
+                        vis_title=str(data[0][3]),
+                        vis_text=str(data[0][4]))
                     # Create the document
                     dag_document.save()
 
                 else:
                     # Update the document
-                    dag_document.update(add_to_set__raw_data=[json_dict], add_to_set__clean_data=[json_dict])
+                    dag_document.update(add_to_set__raw_data=[json_dict])
 
 
 if __name__ == '__main__':

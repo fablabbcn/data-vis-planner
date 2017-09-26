@@ -8,7 +8,6 @@
 #
 #
 
-
 # Import various airflow modules
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
@@ -16,26 +15,20 @@ from airflow.operators.bash_operator import BashOperator
 from airflow.hooks.postgres_hook import PostgresHook
 # Load variables stored in Airflow
 # for passwords, access to databases, API keys and so on...
-from airflow.models import Variable
+# from airflow.models import Variable
 # You can load variables in this way:
 # my_new_python_variable = Variable.get("variable_name_in_airflow_UI")
 
 # Work with time
 from datetime import datetime, timedelta
-# Work with JSON
-import json
-
-# Example: load data from Fablabs.io
-from makerlabs import fablabs_io
-
 
 # DAG name (for the DAG but also for the database)
 dag_name = "hello_world_twitter_stream"
 # Connection to the PostgreSQL, to be defined in the Airflow UI
 pg_hook = PostgresHook(postgres_conn_id="postgres_data")
 
-
 # Setup the Python functions for the operators
+
 
 # This function create the db table if it does not exist
 # and update the id of the row if there are previous ones with the same name
@@ -43,7 +36,7 @@ def setup_db(**kwargs):
     global pg_hook
     global dag_name
     # Create the dag_dag table for storing all the data
-    pg_command = """CREATE TABLE IF NOT EXISTS dag_dag ( id CHAR(50) PRIMARY KEY, raw_data jsonb, clean_data jsonb, type CHAR(50), title varchar(120), text varchar(400), created_at timestamp DEFAULT NOW(), updated_at timestamp DEFAULT NOW() );"""
+    pg_command = """CREATE TABLE IF NOT EXISTS dag_dag ( id CHAR(50) PRIMARY KEY, track varchar(140), type CHAR(50), title varchar(120), text varchar(400), created_at timestamp DEFAULT NOW(), updated_at timestamp DEFAULT NOW() );"""
     pg_hook.run(pg_command)
     # A function for updating the updated_at column at each UPDATE
     pg_command = """CREATE OR REPLACE FUNCTION update_at_function()
@@ -73,42 +66,16 @@ def setup_db(**kwargs):
             new_id = dag_name + "1"
     else:
         new_id = dag_name
+
+    # Save the data
+    dag_track = "python"
+    dag_type = "twitter_stream"
+    dag_text = "..."
+    pg_command = """INSERT INTO dag_dag ( id, track, type, text) VALUES ( %s, %s, %s, %s )"""
+    pg_hook.run(pg_command, parameters=[new_id, dag_track, dag_type, dag_text])
+
     # Return the updated id name
     return new_id
-
-
-# This function loads data and saves it into the raw collection
-def get_raw_data(**kwargs):
-    global pg_hook
-    ti = kwargs["ti"]
-    new_id = ti.xcom_pull(task_ids="hello_task_01")
-    # Get raw data from Fablabs.io, as an example
-    data = fablabs_io.get_labs(format="dict")
-    # Transform the dict into a string for PostgreSQL
-    data = json.dumps(data)
-    # Save the data
-    pg_command = """INSERT INTO dag_dag ( id, raw_data) VALUES ( %s, %s )"""
-    pg_hook.run(pg_command, parameters=[new_id, data])
-    return "Raw data saved successfully."
-
-
-# This function cleans raw data, transforms it for the visualisation
-def clean_data(**kwargs):
-    global pg_hook
-    ti = kwargs["ti"]
-    new_id = ti.xcom_pull(task_ids="hello_task_01")
-    # Load data from the raw_data column, it's only 1 value
-    pg_command = """SELECT raw_data FROM dag_dag WHERE id = %s"""
-    data = pg_hook.get_records(pg_command, parameters=[new_id])[0][0]
-    # clean the data for the Meteor visualisation
-    data = {"number of labs": len(data)}
-    # Transform the dict into a string for PostgreSQL
-    data = json.dumps(data)
-    # Save the data
-    pg_command = """UPDATE dag_dag SET clean_data = %s WHERE id = %s"""
-    pg_hook.run(pg_command, parameters=[data, new_id])
-    return "Data prepared for the visualisation successfully."
-
 
 # Setup the DAG
 #
@@ -131,40 +98,27 @@ def clean_data(**kwargs):
 
 schedule_interval = timedelta(days=365)
 
-dag = DAG(dag_name,
-          description="Simple template for DAGs that use the Twitter Streaming APIs",
-          schedule_interval=schedule_interval,
-          start_date=datetime.now(),
-          concurrency=2,
-          catchup=False)
+dag = DAG(
+    dag_name,
+    description="Simple template for DAGs that use the Twitter Streaming APIs",
+    schedule_interval=schedule_interval,
+    start_date=datetime.now(),
+    concurrency=2,
+    catchup=False)
 
 # Setup the operators of the DAG
-# first_operator = PythonOperator(
-#     task_id="hello_task_01",
-#     python_callable=setup_db,
-#     provide_context=True,
-#     dag=dag)
-#
-# second_operator = PythonOperator(
-#     task_id="hello_task_02",
-#     python_callable=get_raw_data,
-#     provide_context=True,
-#     dag=dag)
-#
-# third_operator = PythonOperator(
-#     task_id="hello_task_03",
-#     python_callable=clean_data,
-#     provide_context=True,
-#     dag=dag)
+first_operator = PythonOperator(
+    task_id="setupdb_task_01",
+    python_callable=setup_db,
+    provide_context=True,
+    dag=dag)
 
-fourth_operator = BashOperator(
-    task_id="twitter-stream",
-    bash_command="python /usr/local/airflow/dags/twitter-stream.py" + " --id=" +
-    "{{ ti.xcom_pull('hello_task_01') }}",
+second_operator = BashOperator(
+    task_id="twitter-streams_task_02",
+    bash_command="python /usr/local/airflow/dags/twitter-stream.py" + " --id="
+    + "{{ ti.xcom_pull('setupdb_task_01') }}",
     retries=0,
     dag=dag)
 
 # Setup the flow of operators in the DAG
-# first_operator >> second_operator >> third_operator >> fourth_operator
-
-fourth_operator
+first_operator >> second_operator
