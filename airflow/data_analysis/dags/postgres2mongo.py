@@ -29,7 +29,7 @@ class DAG_Description(mongoengine.Document):
     raw_data = mongoengine.DictField()
     clean_data = mongoengine.DictField()
     vis_type = mongoengine.StringField(required=True, max_length=200)
-    title = mongoengine.StringField(max_length=120)
+    vis_title = mongoengine.StringField(max_length=120)
     vis_text = mongoengine.StringField(max_length=400)
     updated_at = mongoengine.DateTimeField(default=datetime.now)
     meta = {"collection": "dags"}
