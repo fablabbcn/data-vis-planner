@@ -31,3 +31,16 @@ if (Meteor.isServer) {
     }
   });
 }
+
+var cursor = Dags.find();
+cursor.observeChanges({
+    added: function(id, fields) {
+        console.log("ADDED:", id);
+    },
+    changed: function(id, fields) {
+        console.log("CHANGED:", id);
+    },
+    removed: function(id) {
+        console.log("REMOVED:", id);
+    }
+});
