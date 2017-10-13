@@ -75,6 +75,7 @@ services:
   # PostgreSQL
   postgres:
     container_name: "DataVisPlanner-postgres"
+    hostname: postgres
     build:
       context: ./airflow
       dockerfile: Dockerfile-postgres
