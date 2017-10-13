@@ -40,7 +40,7 @@ class Twitter_Stream(mongoengine.Document):
     vis_title = mongoengine.StringField(max_length=120)
     vis_text = mongoengine.StringField(max_length=400)
     updated_at = mongoengine.DateTimeField(default=datetime.now)
-    meta = {"collection": "twitter_stream"}
+    meta = {"collection": "dags"}
 
 
 # This function parses the command line argument and handle data accordingly
