@@ -1,3 +1,5 @@
+import { DagsVis } from './collections/dags.js'
+
 Router.configure({
   layoutTemplate: 'MasterLayout',
   loadingTemplate: 'Loading',
