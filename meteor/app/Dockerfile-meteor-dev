@@ -15,4 +15,5 @@ ADD . $INSTALL_PATH
 WORKDIR $INSTALL_PATH
 
 RUN meteor npm install
+RUN meteor npm install --save bcrypt
 CMD meteor --allow-superuser

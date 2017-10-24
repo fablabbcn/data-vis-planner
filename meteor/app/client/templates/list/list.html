@@ -1,0 +1,12 @@
+<template name="List">
+    <div class="list">
+        <h2>List of current visualisations</h2>
+        <ol>
+            {{#each vis in allVis}}
+                <li>
+                    {{ vis }}
+                </li>
+            {{/each}}
+        </ol>
+    </div>
+</template>
