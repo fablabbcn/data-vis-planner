@@ -57,6 +57,9 @@ if [ "$1" = "webserver" ] || [ "$1" = "worker" ] || [ "$1" = "scheduler" ] ; the
   fi
 fi
 
+# Set up the connection for the DAGs data storage
+airflow connections -a --conn_id=postgres_data --conn_uri=postgresql://airflow@postgres:5432/airflow_dag_data
+
 # Update configuration depending the type of Executor
 if [ "$EXECUTOR" = "Celery" ]
 then
@@ -105,5 +108,3 @@ else
   $CMD initdb
   exec $CMD webserver
 fi
-# Set up the connection for the DAGs data storage
-airflow connections -a --conn_id=postgres_data --conn_uri=postgresql://airflow@localhost:5432/airflow_dag_data
