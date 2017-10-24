@@ -105,3 +105,5 @@ else
   $CMD initdb
   exec $CMD webserver
 fi
+# Set up the connection for the DAGs data storage
+airflow connections -a --conn_id=postgres_data --conn_uri=postgresql://airflow@localhost:5432/airflow_dag_data

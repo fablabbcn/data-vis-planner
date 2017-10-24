@@ -65,7 +65,7 @@ services:
       - "MONGOCLIENT_AUTH=true"
       - "MONGOCLIENT_USERNAME=admin"
       - "MONGOCLIENT_PASSWORD=password"
-      - "MONGOCLIENT_DEFAULT_CONNECTION_URL=mongodb://mongo:27017"
+      - "MONGOCLIENT_DEFAULT_CONNECTION_URL=mongodb://mongo:27017/"
 
   # Redis
   redis:
@@ -124,9 +124,9 @@ services:
       context: ./airflow
       dockerfile: Dockerfile-airflow
     depends_on:
+        - postgres
         - redis
         - mongo
-        - postgres
     restart: always
     env_file:
         - ./airflow/environment.env
