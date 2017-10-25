@@ -76,10 +76,11 @@ def setup_db(**kwargs):
 
     # Save the data
     dag_type = "barchart"
+    dag_title = "Template DAG"
     dag_text = "..."
     dag_footer = "..."
-    pg_command = """INSERT INTO dag_dag ( id, type, text, footer) VALUES ( %s, %s, %s, %s )"""
-    pg_hook.run(pg_command, parameters=[new_id, dag_type, dag_text, dag_footer])
+    pg_command = """INSERT INTO dag_dag ( id, type, title, text, footer) VALUES ( %s, %s, %s, %s, %s )"""
+    pg_hook.run(pg_command, parameters=[new_id, dag_type, dag_title, dag_text, dag_footer])
 
     # Return the updated id name
     return new_id

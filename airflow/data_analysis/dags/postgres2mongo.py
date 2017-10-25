@@ -32,6 +32,7 @@ class DAG_Description(mongoengine.Document):
     vis_title = mongoengine.StringField(max_length=120)
     vis_text = mongoengine.StringField(max_length=400)
     vis_footer = mongoengine.StringField(max_length=400)
+    created_at = mongoengine.DateTimeField()
     updated_at = mongoengine.DateTimeField(default=datetime.now)
     meta = {"collection": "dags"}
 
@@ -64,10 +65,11 @@ def cli(args):
                 dag_name=row_id,
                 raw_data=data[0][1],
                 clean_data=data[0][2],
-                vis_type=str(data[0][3]),
-                vis_title=str(data[0][4]),
-                vis_text=str(data[0][5]),
-                vis_footer=str(data[0][6]))
+                vis_type=data[0][3],
+                vis_title=data[0][4],
+                vis_text=data[0][5],
+                vis_footer=data[0][6],
+                created_at=data[0][7])
 
             # Save the document
             dag_document.save()

@@ -70,10 +70,11 @@ def setup_db(**kwargs):
     # Save the data
     dag_track = "python"
     dag_type = "twitter_stream"
+    dag_title = "Twitter Stream Temaplte"
     dag_text = "..."
     dag_footer = "..."
-    pg_command = """INSERT INTO dag_dag ( id, track, type, text, footer) VALUES ( %s, %s, %s, %s, %s )"""
-    pg_hook.run(pg_command, parameters=[new_id, dag_track, dag_type, dag_text, dag_footer])
+    pg_command = """INSERT INTO dag_dag ( id, track, type, title, text, footer) VALUES ( %s, %s, %s, %s, %s, %s )"""
+    pg_hook.run(pg_command, parameters=[new_id, dag_track, dag_type, dag_title, dag_text, dag_footer])
 
     # Return the updated id name
     return new_id
