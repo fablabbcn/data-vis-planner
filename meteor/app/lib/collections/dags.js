@@ -1,9 +1,9 @@
-//var database = new MongoInternals.RemoteCollectionDriver("mongodb://mongo:27017/dags");
-//Dags = new Mongo.Collection('dags', { _driver: database });
+// var database = new MongoInternals.RemoteCollectionDriver("mongodb://mongo:27017/dags");
+// export const Dags = new Mongo.Collection('dags', { _driver: database });
 
 
 // DAGs created by Airflow
-Dags = new Mongo.Collection('dags');
+export const Dags = new Mongo.Collection('dags');
 
 if (Meteor.isServer) {
     Dags.allow({
@@ -37,7 +37,7 @@ if (Meteor.isServer) {
 
 
 // Meteor visualisations based on the Airflow DAGs
-DagsVis = new Mongo.Collection('dagsvis');
+export const DagsVis = new Mongo.Collection('dagsvis');
 
 if (Meteor.isServer) {
     DagsVis.allow({

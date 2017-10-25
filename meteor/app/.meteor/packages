@@ -19,5 +19,7 @@ shell-server@0.2.4            # Server-side component of the `meteor shell` comm
 iron:router
 dynamic-import@0.1.3
 npm-bcrypt
+aldeed:tabular
 msavin:mongol
 twbs:bootstrap
+momentjs:moment

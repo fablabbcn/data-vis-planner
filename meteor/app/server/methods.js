@@ -2,6 +2,9 @@
 /*  Methods */
 /*****************************************************************************/
 
+import { Dags } from '../lib/collections/dags.js';
+import { DagsVis } from '../lib/collections/dags.js';
+
 Meteor.methods({
     'add_vis': function(id) {
         // Create a visualisation
@@ -11,12 +14,12 @@ Meteor.methods({
         return DagsVis.insert({
             "name": dag.dag_name,
             "dag_id": id,
-            "title": dag.vis_title,
-            "text": dag.vis_text,
-            "type": dag.vis_type,
-            "updatedAt": dag.updatedAt,
-            "credits": "doc.credits",
-            "data": dag.clean_data
+            "title": dag["vis_title"],
+            "text": dag["vis_text"],
+            "type": dag["vis_type"],
+            "updatedAt": dag["updatedAt"],
+            "footer": dag["vis_footer"],
+            "data": dag["clean_data"]
         });
     },
     'change_vis': function(id) {

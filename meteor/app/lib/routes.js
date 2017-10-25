@@ -7,10 +7,8 @@ Router.configure({
 });
 
 
-Router.route('/', {
-  name: 'home',
-  controller: 'HomeController',
-  where: 'client'
+Router.route('/', function () {
+  this.render('Home');
 });
 
 Router.route('vis/:_id', {
