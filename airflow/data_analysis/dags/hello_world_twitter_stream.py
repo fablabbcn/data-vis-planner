@@ -36,7 +36,7 @@ def setup_db(**kwargs):
     global pg_hook
     global dag_name
     # Create the dag_dag table for storing all the data
-    pg_command = """CREATE TABLE IF NOT EXISTS dag_dag ( id CHAR(50) PRIMARY KEY, track varchar(140), type CHAR(50), title varchar(120), text varchar(400), created_at timestamp DEFAULT NOW(), updated_at timestamp DEFAULT NOW() );"""
+    pg_command = """CREATE TABLE IF NOT EXISTS dag_dag ( id CHAR(50) PRIMARY KEY, track varchar(140), type CHAR(50), title varchar(120), text varchar(400), footer varchar(400), created_at timestamp DEFAULT NOW(), updated_at timestamp DEFAULT NOW() );"""
     pg_hook.run(pg_command)
     # A function for updating the updated_at column at each UPDATE
     pg_command = """CREATE OR REPLACE FUNCTION update_at_function()
@@ -71,8 +71,9 @@ def setup_db(**kwargs):
     dag_track = "python"
     dag_type = "twitter_stream"
     dag_text = "..."
-    pg_command = """INSERT INTO dag_dag ( id, track, type, text) VALUES ( %s, %s, %s, %s )"""
-    pg_hook.run(pg_command, parameters=[new_id, dag_track, dag_type, dag_text])
+    dag_footer = "..."
+    pg_command = """INSERT INTO dag_dag ( id, track, type, text, footer) VALUES ( %s, %s, %s, %s, %s )"""
+    pg_hook.run(pg_command, parameters=[new_id, dag_track, dag_type, dag_text, dag_footer])
 
     # Return the updated id name
     return new_id
