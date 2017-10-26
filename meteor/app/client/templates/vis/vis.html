@@ -1,9 +1,14 @@
 <template name="Vis">
-  <div class="vis">
-          <h1>Find me in app/client/templates/vis/vis</h1>
-          <p>
-              Just a vis
-          </p>
-          <div id="visdiv"></div>
-  </div>
+    <div class="vis">
+        {{#with data}}
+            <h3>{{title}}</h3>
+            <p>
+                {{text}}
+            </p>
+            <div id="visdiv"></div>
+            <p>
+                {{footer}}
+            </p>
+        {{/with}}
+    </div>
 </template>
