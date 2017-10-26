@@ -69,13 +69,6 @@ if (Meteor.isServer) {
     });
 }
 
-// Check that there are no existing dagsvis for the same dag already existing
-existingDagsVis2 = DagsVis.find();
-console.log("DEBUG12": existingDagsVis2);
-
-// import { Dags } from '../lib/collections/dags.js';
-// import { DagsVis } from '../lib/collections/dags.js';
-
 // Listen for changes in the Airflow DAGs collections in order manage visualisations
 var cursor = Dags.find();
 cursor.observeChanges({
@@ -83,26 +76,22 @@ cursor.observeChanges({
         // A new data source from DAGs was added
         console.log("A new DAGs data source was created in Mongo with id:", id._str);
         // Check that there are no existing dagsvis for the same dag already existing
-        existingDagsVis = DagsVis.find({
-            "dag_id": id._str
+        existingDagsVis = DagsVis.findOne({
+            "dag_id": id
         }, { fields: { "dag_id": 1 }});
-        existingDagsVis2 = DagsVis.find({}, { sort: { createdAt: -1 } });
-
-        console.log("DEBUG1": existingDagsVis);
-        console.log("DEBUG12": existingDagsVis2);
-        console.log("DEBUG2": existingDagsVis._docs._map);
-
         if (_.isEmpty(existingDagsVis)) {
-            console.log(existingDagsVis);
+            if (Meteor.isServer) {
+                // Create a visualisation
+                Meteor.call('add_vis', id, function(error, result) {
+                    if (error) {
+                        console.log("Error in adding a visualisation:", error, "ID:", id._str);
+                    } else {
+                        console.log("A new DAGs data vis was created with id:", result);
+                    }
+                });
+            }
         } else {
-            // Create a visualisation
-            Meteor.call('add_vis', id, function(error, result) {
-                if (error) {
-                    console.log("Error in adding a visualisation:", error, "ID:", id._str);
-                } else {
-                    console.log("A new DAGs data vis was created with id:", result);
-                }
-            });
+            console.log("A data vis was already present for DAGs with ID:", id._str);
         }
     },
     changed: function(id, fields) {

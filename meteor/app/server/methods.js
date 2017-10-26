@@ -12,12 +12,12 @@ Meteor.methods({
         dag = Dags.findOne(id);
         // Create a visualistion for this DAG
         return DagsVis.insert({
-            "name": dag.dag_name,
+            "name": dag["dag_name"],
             "dag_id": id,
             "title": dag["vis_title"],
             "text": dag["vis_text"],
             "type": dag["vis_type"],
-            "updatedAt": dag["updatedAt"],
+            "createdAt": dag["created_at"],
             "footer": dag["vis_footer"],
             "data": dag["clean_data"]
         });
