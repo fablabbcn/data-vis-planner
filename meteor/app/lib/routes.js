@@ -11,11 +11,10 @@ Router.route('/', function () {
   this.render('Home');
 });
 
-Router.route('vis/:_id', {
-    name: 'vis',
-    controller: 'VisController',
-    data: function(){
-        return DagsVis.findOne({ _id: this.params._id });
-    },
-    where: 'client'
+Router.route('/vis/:_id', function () {
+    this.render('Vis', {
+    data: function () {
+      return DagsVis.findOne({ _id: this.params._id });
+    }
+  });
 });

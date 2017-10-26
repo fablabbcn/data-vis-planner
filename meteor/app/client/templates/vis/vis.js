@@ -15,6 +15,7 @@ Template.Vis.helpers({
 /*****************************************************************************/
 Template.Vis.onCreated(function () {
     Meteor.subscribe('dags');
+    Meteor.subscribe('dagsvis');
 });
 
 Template.Vis.onRendered(function () {
