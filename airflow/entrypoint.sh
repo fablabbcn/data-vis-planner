@@ -57,9 +57,6 @@ if [ "$1" = "webserver" ] || [ "$1" = "worker" ] || [ "$1" = "scheduler" ] ; the
   fi
 fi
 
-# Set up the connection for the DAGs data storage
-airflow connections -a --conn_id=postgres_data --conn_uri=postgresql://airflow@postgres:5432/airflow_dag_data
-
 # Update configuration depending the type of Executor
 if [ "$EXECUTOR" = "Celery" ]
 then
@@ -82,6 +79,8 @@ then
   if [ "$1" = "webserver" ]; then
     echo "Initialize database..."
     $CMD initdb
+    # Set up the connection for the DAGs data storage
+    airflow connections -a --conn_id=postgres_data --conn_uri=postgresql://airflow@postgres:5432/airflow_dag_data
     exec $CMD webserver
   else
     sleep 10
@@ -94,6 +93,8 @@ then
   sed -i "s#broker_url = redis://redis:6379/1#broker_url = redis://$REDIS_PREFIX$REDIS_HOST:$REDIS_PORT/1#" "$AIRFLOW_HOME"/airflow.cfg
   echo "Initialize database..."
   $CMD initdb
+  # Set up the connection for the DAGs data storage
+  airflow connections -a --conn_id=postgres_data --conn_uri=postgresql://airflow@postgres:5432/airflow_dag_data
   exec $CMD webserver &
   exec $CMD scheduler
 # By default we use SequentialExecutor
@@ -106,5 +107,7 @@ else
   sed -i "s#sql_alchemy_conn = postgresql+psycopg2://airflow:airflow@postgres/airflow#sql_alchemy_conn = sqlite:////usr/local/airflow/airflow.db#" "$AIRFLOW_HOME"/airflow.cfg
   echo "Initialize database..."
   $CMD initdb
+  # Set up the connection for the DAGs data storage
+  airflow connections -a --conn_id=postgres_data --conn_uri=postgresql://airflow@postgres:5432/airflow_dag_data
   exec $CMD webserver
 fi
