@@ -52,29 +52,27 @@ def setup_db(**kwargs):
     pg_hook.run(pg_command)
     pg_command = """CREATE TRIGGER update_column BEFORE UPDATE ON dag_dag FOR EACH ROW EXECUTE PROCEDURE update_at_function();"""
     pg_hook.run(pg_command)
-    # Check if a row with the same id exists
-    pg_command = """SELECT id FROM dag_dag WHERE id LIKE %s"""
-    previous_dags_same_name = []
-    search_term = "%" + dag_name + "%"
-    # If it exists, add consecutive number to it
-    for i in pg_hook.get_records(pg_command, parameters=[search_term]):
-        previous_dags_same_name.append(i[0].rstrip())
-    if len(previous_dags_same_name) > 0:
-        if previous_dags_same_name[-1][-1].isdigit():
-            new_id = dag_name + str(int(previous_dags_same_name[-1][-1]) + 1)
-        else:
-            new_id = dag_name + "1"
-    else:
-        new_id = dag_name
-
     # Save the data
     dag_track = "python"
     dag_type = "twitter_stream"
     dag_title = "Twitter Stream Temaplte"
     dag_text = "..."
     dag_footer = "..."
-    pg_command = """INSERT INTO dag_dag ( id, track, type, title, text, footer) VALUES ( %s, %s, %s, %s, %s, %s )"""
-    pg_hook.run(pg_command, parameters=[new_id, dag_track, dag_type, dag_title, dag_text, dag_footer])
+    new_id = dag_name
+    # Check if a row with the same id exists
+    pg_command = """SELECT id FROM dag_dag WHERE id LIKE %s"""
+    previous_dags_same_name = []
+    search_term = "%" + dag_name + "%"
+    # If it exists, update it
+    for i in pg_hook.get_records(pg_command, parameters=[search_term]):
+        previous_dags_same_name.append(i[0].rstrip())
+    if len(previous_dags_same_name) > 0:
+        pg_command = """UPDATE dag_dag SET track = %s, type = %s, title = %s, text = %s, footer = %s WHERE id = %s"""
+        pg_hook.run(pg_command, parameters=[dag_track, dag_type, dag_title, dag_text, dag_footer, new_id])
+    else:
+        # Otherwise, add a new row
+        pg_command = """INSERT INTO dag_dag ( id, track, type, title, text, footer) VALUES ( %s, %s, %s, %s, %s, %s )"""
+        pg_hook.run(pg_command, parameters=[new_id, dag_track, dag_type, dag_title, dag_text, dag_footer])
 
     # Return the updated id name
     return new_id
