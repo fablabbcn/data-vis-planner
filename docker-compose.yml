@@ -71,6 +71,10 @@ services:
   postgres:
     container_name: "DataVisPlanner-postgres"
     hostname: postgres
+    env_file:
+        - environment.env
+    image: postgres
+    restart: always
     build:
       context: ./airflow
       dockerfile: Dockerfile-postgres
@@ -85,6 +89,8 @@ services:
       image: fenglc/pgadmin4
       ports:
           - 5050:5050
+      env_file:
+          - environment.env
       links:
           - postgres
       depends_on:
@@ -123,7 +129,7 @@ services:
         - mongo
     restart: always
     env_file:
-        - environment.env
+        - airflow.env
     volumes:
         - airflow:/usr/local/airflow/dags
     links:
@@ -140,10 +146,11 @@ services:
       dockerfile: Dockerfile-airflow
     restart: always
     depends_on:
+        - postgres
         - redis
         - mongo
     env_file:
-        - environment.env
+        - airflow.env
     ports:
         - 5555:5555
     links:
@@ -158,12 +165,13 @@ services:
       dockerfile: Dockerfile-airflow
     restart: always
     depends_on:
+        - postgres
         - webserver
         - mongo
     volumes_from:
       - webserver
     env_file:
-        - environment.env
+        - airflow.env
     links:
         - mongo
         - postgres
@@ -176,12 +184,13 @@ services:
       dockerfile: Dockerfile-airflow
     restart: always
     depends_on:
+        - postgres
         - scheduler
         - mongo
     volumes_from:
       - webserver
     env_file:
-        - environment.env
+        - airflow.env
     links:
         - mongo
         - postgres

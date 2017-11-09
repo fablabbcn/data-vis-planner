@@ -11,7 +11,8 @@ TRY_LOOP="20"
 : ${POSTGRES_HOST:="postgres"}
 : ${POSTGRES_PORT:="5432"}
 : ${POSTGRES_USER:="airflow"}
-: ${POSTGRES_PASSWORD:="airflow"}
+# This is setup in the environment.env
+# : ${POSTGRES_PASSWORD:="pgpassword"}
 : ${POSTGRES_DB:="airflow"}
 
 : ${FERNET_KEY:=$(python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)")}
