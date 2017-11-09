@@ -13,7 +13,7 @@ services:
     ports:
       - 8000:80
     env_file:
-        - ./environment.env
+        - environment.env
     environment:
       - NGINX_HOST="${NGINX_HOST}"
       - NGINX_PORT="${NGINX_PORT}"
@@ -35,7 +35,7 @@ services:
     ports:
       - 3000:3000
     env_file:
-        - ./environment.env
+        - environment.env
     environment:
       - MONGO_URL="${MONGO_URL_METEOR}"
 
@@ -65,7 +65,7 @@ services:
     ports:
         - 3300:3000
     env_file:
-        - ./environment.env
+        - environment.env
     environment:
       - MONGO_URL="${MONGO_URL_UI}"
       - MONGOCLIENT_AUTH="${MONGOCLIENT_AUTH_UI}"
@@ -110,7 +110,7 @@ services:
     container_name: "DataVisPlanner-cloud9"
     image: agungf/cloud9-ide
     env_file:
-        - ./environment.env
+        - environment.env
     environment:
       - ROOT_PASS="${ROOT_PASS}"
       - C9_WORKSPACE="${C9_WORKSPACE}"
@@ -137,11 +137,11 @@ services:
         - mongo
     restart: always
     env_file:
-        - ./environment.env
+        - environment.env
     environment:
         - EXECUTOR="${EXECUTOR}"
     volumes:
-        - ./airflow/data_analysis/dags:/usr/local/airflow/dags
+        - airflow/data_analysis/dags:/usr/local/airflow/dags
     links:
         - mongo
         - postgres
@@ -159,7 +159,7 @@ services:
         - redis
         - mongo
     env_file:
-        - ./environment.env
+        - environment.env
     environment:
         - EXECUTOR="${EXECUTOR}"
     ports:
@@ -179,9 +179,9 @@ services:
         - webserver
         - mongo
     volumes:
-        - ./airflow/data_analysis/dags:/usr/local/airflow/dags
+        - airflow/data_analysis/dags:/usr/local/airflow/dags
     env_file:
-        - ./environment.env
+        - environment.env
     environment:
         - EXECUTOR="${EXECUTOR}"
     links:
@@ -199,9 +199,9 @@ services:
         - scheduler
         - mongo
     volumes:
-        - ./airflow/data_analysis/dags:/usr/local/airflow/dags
+        - airflow/data_analysis/dags:/usr/local/airflow/dags
     env_file:
-        - ./environment.env
+        - environment.env
     environment:
         - EXECUTOR="${EXECUTOR}"
     links:
