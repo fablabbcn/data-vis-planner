@@ -12,9 +12,11 @@ services:
       dockerfile: Dockerfile-homepage
     ports:
       - 8000:80
+    env_file:
+        - ./environment.env
     environment:
-      #- NGINX_HOST=foobar.com
-      - NGINX_PORT=80
+      - NGINX_HOST="${NGINX_HOST}"
+      - NGINX_PORT="${NGINX_PORT}"
 
   # Meteor
   # Data visualisations
@@ -32,8 +34,10 @@ services:
       - mongo
     ports:
       - 3000:3000
+    env_file:
+        - ./environment.env
     environment:
-      - "MONGO_URL=mongodb://mongo:27017/dags"
+      - MONGO_URL="${MONGO_URL_METEOR}"
 
 
   # --- DATABASES ---
@@ -60,12 +64,14 @@ services:
       - mongo:/data
     ports:
         - 3300:3000
+    env_file:
+        - ./environment.env
     environment:
-      - "MONGO_URL=mongodb://mongo:27017"
-      - "MONGOCLIENT_AUTH=true"
-      - "MONGOCLIENT_USERNAME=admin"
-      - "MONGOCLIENT_PASSWORD=password"
-      - "MONGOCLIENT_DEFAULT_CONNECTION_URL=mongodb://mongo:27017/"
+      - MONGO_URL="${MONGO_URL_UI}"
+      - MONGOCLIENT_AUTH="${MONGOCLIENT_AUTH_UI}"
+      - MONGOCLIENT_USERNAME="${MONGOCLIENT_USERNAME_UI}"
+      - MONGOCLIENT_PASSWORD="${MONGOCLIENT_PASSWORD_UI}"
+      - MONGOCLIENT_DEFAULT_CONNECTION_URL="${MONGOCLIENT_DEFAULT_CONNECTION_URL_UI}"
 
   # Redis
   redis:
@@ -103,9 +109,11 @@ services:
   cloud9:
     container_name: "DataVisPlanner-cloud9"
     image: agungf/cloud9-ide
+    env_file:
+        - ./environment.env
     environment:
-      - ROOT_PASS=thesecrets
-      - C9_WORKSPACE=/usr/local/airflow/dags
+      - ROOT_PASS="${ROOT_PASS}"
+      - C9_WORKSPACE="${C9_WORKSPACE}"
     depends_on:
       - webserver
     volumes_from:
@@ -129,9 +137,9 @@ services:
         - mongo
     restart: always
     env_file:
-        - ./airflow/environment.env
+        - ./environment.env
     environment:
-        - EXECUTOR=Celery
+        - EXECUTOR="${EXECUTOR}"
     volumes:
         - ./airflow/data_analysis/dags:/usr/local/airflow/dags
     links:
@@ -150,8 +158,10 @@ services:
     depends_on:
         - redis
         - mongo
+    env_file:
+        - ./environment.env
     environment:
-        - EXECUTOR=Celery
+        - EXECUTOR="${EXECUTOR}"
     ports:
         - 5555:5555
     links:
@@ -171,9 +181,9 @@ services:
     volumes:
         - ./airflow/data_analysis/dags:/usr/local/airflow/dags
     env_file:
-        - ./airflow/environment.env
+        - ./environment.env
     environment:
-        - EXECUTOR=Celery
+        - EXECUTOR="${EXECUTOR}"
     links:
         - mongo
         - postgres
@@ -191,9 +201,9 @@ services:
     volumes:
         - ./airflow/data_analysis/dags:/usr/local/airflow/dags
     env_file:
-        - ./airflow/environment.env
+        - ./environment.env
     environment:
-        - EXECUTOR=Celery
+        - EXECUTOR="${EXECUTOR}"
     links:
         - mongo
         - postgres
