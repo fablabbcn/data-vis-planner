@@ -23,6 +23,9 @@ RUN chmod +x /entrypoint.sh
 # Automatically install python modules when requirements.txt changes
 RUN pip install when-changed
 
+# Load environment variables from python
+RUN pip install python-dotenv
+
 # Airflow user
 USER airflow
 
