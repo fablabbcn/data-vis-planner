@@ -1,3 +1,4 @@
+python-dotenv==0.7.1
 pymongo==3.4.0
 makerlabs
 mongoengine==0.10.6
