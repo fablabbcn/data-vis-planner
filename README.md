@@ -1,23 +1,32 @@
 ![](homepage/img/datavisplanner_logo_100.png)
 
 
-A platform for planning data analyses and visualisations.
+A platform for planning and scheduling data analyses and visualisations. Data analyses can then be configured in order to run periodically, and visualisations will be updated in realtime, and can be embedded everywhere on the web.
 
-## Instructions
+## Installation
 
-```
-git clone https://github.com/fablabbcn/DataVisPlanner.git
+The platform is organized with docker-compose, so the installation is quite simple:
 
-cd DataVisPlanner
+- Clone the repo: ``git clone https://github.com/fablabbcn/DataVisPlanner.git``
+- Go inside the project folder: ``cd DataVisPlanner``
+- Customise the ``docker-compose.yml`` file
+- Test the platform: ``docker-compose up --build``
+- Run the platform: ``docker-compose up -d``
 
-docker-compose up --build
-```
+## Usage
 
-- Homepage can be accessed at **localhost:8000**
-- Airflow can be accessed at **localhost:8080**
-- Flower can be accessed at **localhost:5555**
-- Meteor can be accessed at **localhost:3000**
-- Portainer can be accessed at **localhost:9000**
+The DataVisPlanner platform is based on several docker containers, only some of them need to be accessed directly. They can be accessed all from the homepage at **localhost:80**, here are the descriptions and links for direct access to the main containers (not all of them!):
+
+- **Homepage** can be accessed at **localhost:80**, and from there all the important information and containers can be accessed
+- Visualisations are rendered and listed with [Meteor](https://www.meteor.com/) at **localhost:3000**
+- Data analyses processes are scheduled and maneged with [Airflow](https://airflow.incubator.apache.org/) at **localhost:8080**
+- Data analyses processes can be written online with [Cloud9](https://c9.io/) at **localhost:8181**
+- Data analyses processes using Celery can also be monitored with [Flower](http://flower.readthedocs.io/en/latest/) at **localhost:5555**
+- Data stored in the Mongo database can be accessed with [Nosqlclient](https://www.nosqlclient.com/) at **localhost:3300**
+- Data stored in the PostgreSQL database can be accessed with [pgAdmin](https://www.pgadmin.org/) at **localhost:5050**
+- All the containers can be managed with [Portainer](https://portainer.io/) at **localhost:9000**
+
+The homepage contains update instructions about how to use the platform and how to extend it with custom data analyses and visualisations. Please check the documentation of each container from their developers.
 
 ## Credits
 
