@@ -9,7 +9,8 @@ The platform is organized with docker-compose, so the installation is quite simp
 
 - Clone the repo: ``git clone https://github.com/fablabbcn/DataVisPlanner.git``
 - Go inside the project folder: ``cd DataVisPlanner``
-- Customise the ``docker-compose.yml`` file
+- Customise the ``docker-compose.yml`` file if necessary
+- Customise the ``environment.env`` and ``airflow.env`` files if necessary
 - Test the platform: ``docker-compose up --build``
 - Run the platform: ``docker-compose up -d``
 
