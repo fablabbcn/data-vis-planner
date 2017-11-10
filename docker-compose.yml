@@ -21,8 +21,8 @@ services:
     container_name: "DataVisPlanner-meteor"
     build:
       context: ./meteor/app
-      # dockerfile: Dockerfile-meteor # Production
-      dockerfile: Dockerfile-meteor-dev # Development
+      dockerfile: Dockerfile-meteor # Production
+      # dockerfile: Dockerfile-meteor-dev # Development
     volumes:
       - .:/meteor/app/
     depends_on:
