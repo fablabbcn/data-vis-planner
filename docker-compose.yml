@@ -11,7 +11,7 @@ services:
       context: ./homepage
       dockerfile: Dockerfile-homepage
     ports:
-      - 8000:80
+      - 80:80
     env_file:
         - environment.env
 
