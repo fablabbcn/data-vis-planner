@@ -1,7 +1,36 @@
 <template name="Home">
-  <div class="home">
-    <h1>DataVisPlanner</h1>
-    {{> List}}
-    <h2>Credits</h2>
-  </div>
+    <div class="home">
+        <div class="container">
+            <div class="row logoh2">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                    <img src="datavisplanner_logo_50.png"/>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    {{> List}}
+                </div>
+            </div>
+            <div class="row logoh2">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                    <a href="http://make-it.io"><img src="from_30.png"/></a>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                    <a href="https://github.com/fablabbcn/datavisplanner">
+                        <button class="btn btn-default" style="width: 100%;">
+                            <i class="fa fa-github fa-lg" aria-hidden="true"></i>
+                            Source Code</button>
+                    </a>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+        </div>
+    </div>
 </template>
