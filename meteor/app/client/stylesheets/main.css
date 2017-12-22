@@ -4,7 +4,6 @@
 
 @import url('https://fonts.googleapis.com/css?family=Fira+Sans:300,300i,400,400i,600,600i,700,700i');
 @import url('https://fonts.googleapis.com/css?family=Fira+Mono');
-@import url('https://fonts.googleapis.com/css?family=Rubik:400,500');
 
 html,
 body
@@ -34,14 +33,14 @@ h2,
 h3,
 h4
 {
-    font-family: 'Rubik', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     padding: 5px;
 }
 
 h1
 {
     font-size: 140% !important;
-    font-weight: 500;
+    font-weight: 600;
     margin: 30px auto;
     text-align: center;
 }
