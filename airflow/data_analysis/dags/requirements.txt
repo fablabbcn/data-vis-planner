@@ -3,3 +3,4 @@ makerlabs
 mongoengine==0.10.6
 twitter
 jsonpickle
+sqlalchemy<1.2
