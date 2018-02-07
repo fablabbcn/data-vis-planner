@@ -2,44 +2,82 @@
     <div class="col-xs-12">
         <img class="img-responsive center-block" src="img/datavisplanner_logo_100.png"/>
         <p class="lead">
-            Explore how future technology developments, platforms or trends will impact how makers will create, communicate, organize and might even do business ...
-            <label go-to-route="route: about" class="label label-info label-button">Read more</label>
+            A platform for planning and scheduling data analyses and visualisations. Data analyses can then be configured in order to run periodically, and visualisations will be updated in realtime, and can be embedded everywhere on the web.
         </p>
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-12 col-sm-4">
-        <div class="navigate-content" go-to-route="route: trends">
-            <div class="rounded-separator-h1-top"></div>
-            <h1>
-                <i class="fa fa-line-chart" aria-hidden="true"></i>
-                Trends
-            </h1>
-            <div class="rounded-separator-h1-bottom"></div>
-            <p>
-                A list of the current
-                <em>Trends</em>
-                in technologies used by and affecting the Maker movement.
-            </p>
-            <img class="img-responsive center-block" src="#"/>
-            <a href="#" go-to-route="route: trends" class="btn btn-default">Explore Trends</a>
-        </div>
+    <div class="col-xs-12">
+        <div class="rounded-separator-h1-top"></div>
+        <h1>
+            <i class="fa fa-info-circle" aria-hidden="true"></i>
+            About
+        </h1>
+        <div class="rounded-separator-h1-bottom"></div>
+        <p>
+            DataVisPlanner is a (micro) platform for planning and scheduling data analyses and visualisations. Data analyses can then be configured in order to run periodically, and visualisations will be updated in realtime, and can be embedded everywhere on
+            the web.
+        </p>
+        <p>
+            It is an organisation of existing containers and with the addition of custom software for planning and managing data analyses and visualisations processes. It is <a href="https://github.com/fablabbcn/datavisplanner">open source on GitHub</a>, so more containers and visualisations can be added.
+        </p>
+        <div class="rounded-separator-h2-top"></div>
+        <h2 id="toc_0">Installation</h2>
+        <div class="rounded-separator-h2-bottom"></div>
+        <p>The platform is organized with docker-compose, so the installation is quite simple:</p>
+        <ul>
+            <li>Clone the repo:
+                <code>git clone https://github.com/fablabbcn/DataVisPlanner.git</code>
+            </li>
+            <li>Go inside the project folder:
+                <code>cd DataVisPlanner</code>
+            </li>
+            <li>Customise the
+                <code>docker-compose.yml</code>
+                file if necessary</li>
+            <li>Customise the
+                <code>environment.env</code>
+                and
+                <code>airflow.env</code>
+                files if necessary</li>
+            <li>Test the platform:
+                <code>docker-compose up --build</code>
+            </li>
+            <li>Run the platform:
+                <code>docker-compose up -d</code>
+            </li>
+        </ul>
+        <div class="rounded-separator-h2-top"></div>
+        <h2 id="toc_1">Usage</h2>
+        <div class="rounded-separator-h2-bottom"></div>
+        <p>The DataVisPlanner platform is based on several docker containers, only some of them need to be accessed directly. They can be accessed all from this homepage at <strong>localhost:80</strong>, here are the descriptions and links for direct access to the main containers (not all of them!):</p>
+        <ul>
+            <li>
+                Homepage can be accessed at <a href="http://localhost:79">localhost:80</a>, and from there all the important information and containers can be accessed</li>
+            <li>Visualisations are rendered and listed with <a href="https://www.meteor.com/">Meteor</a> at <a href="http://localhost:3000">localhost:3000</a>.
+            </li>
+            <li>Data analyses processes are scheduled and maneged with
+                <a href="https://airflow.incubator.apache.org/">Airflow</a>
+                at <a href="http://localhost:8080">localhost:8080</a>.
+            </li>
+            <li>Data analyses processes can be written online with
+                <a href="https://c9.io/">Cloud9</a> at <a href="http://localhost:8181">localhost:8181</a>.
+            </li>
+            <li>Data analyses processes using Celery can also be monitored with
+                <a href="http://flower.readthedocs.io/en/latest/">Flower</a>
+                at <a href="http://localhost:5555">localhost:5555</a>.
+            </li>
+            <li>Data stored in the Mongo database can be accessed with
+                <a href="https://www.nosqlclient.com/">Nosqlclient</a>
+                at <a href="http://localhost:3300">localhost:3300</a>.
+            </li>
+            <li>Data stored in the PostgreSQL database can be accessed with
+                <a href="https://www.pgadmin.org/">pgAdmin</a> at <a href="http://localhost:5050">localhost:5050</a>.
+            </li>
+            <li>All the containers can be managed with
+                <a href="https://portainer.io/">Portainer</a> at <a href="http://localhost:9000">localhost:9000</a>.
+            </li>
+        </ul>
     </div>
-    <div class="col-xs-12 col-sm-4">
-        <div class="navigate-content" go-to-route="route: platforms-page">
-            <div class="rounded-separator-h1-top"></div>
-            <h1>
-                <i class="fa fa-th-large" aria-hidden="true"></i>
-                Platforms
-            </h1>
-            <div class="rounded-separator-h1-bottom"></div>
-            <p>
-                A list of the current
-                <em>Platforms</em>
-                available for Maker initiatives to use for their projects.
-            </p>
-            <img class="img-responsive center-block" src="#"/>
-            <a go-to-route="route: platforms-page" class="btn btn-default">Explore Platforms</a>
-        </div>
-    </div>
+</div>
 </div>
