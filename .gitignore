@@ -1,3 +1,6 @@
+#Main Docker Compose env file
+.env
+
 #Cloud9 config
 airflow/data_analysis/.c9/
 airflow/data_analysis/dags/.c9/

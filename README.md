@@ -11,6 +11,7 @@ The platform is organized with docker-compose, so the installation is quite simp
 - Go inside the project folder: ``cd DataVisPlanner``
 - Customise the ``docker-compose.yml`` file if necessary
 - Customise the ``environment.env`` and ``airflow.env`` files if necessary
+- Copy the ``environment.env`` to ``.env`` file
 - Test the platform: ``docker-compose up --build``
 - Run the platform: ``docker-compose up -d``
 
@@ -32,4 +33,3 @@ The homepage contains update instructions about how to use the platform and how 
 ## Credits
 
 [![](homepage/img/from_30.png)](https://ec.europa.eu/digital-agenda/en/news/22-new-caps-projects-horizon-2020)
-

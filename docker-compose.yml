@@ -13,12 +13,14 @@ services:
     ports:
       - 80:80
     env_file:
-        - environment.env
+        - .env
 
   # Meteor
   # Data visualisations
   meteor:
     container_name: "DataVisPlanner-meteor"
+    env_file:
+        - .env
     build:
       context: ./meteor/app
       dockerfile: Dockerfile-meteor # Production
@@ -31,8 +33,7 @@ services:
       - mongo
     ports:
       - 3000:3000
-    env_file:
-        - environment.env
+
 
 
   # --- DATABASES ---
@@ -60,7 +61,7 @@ services:
     ports:
         - 3300:3000
     env_file:
-        - environment.env
+        - .env
 
   # Redis
   redis:
@@ -72,7 +73,7 @@ services:
     container_name: "DataVisPlanner-postgres"
     hostname: postgres
     env_file:
-        - environment.env
+        - .env
     image: postgres
     restart: always
     build:
@@ -90,7 +91,7 @@ services:
       ports:
           - 5050:5050
       env_file:
-          - environment.env
+          - .env
       links:
           - postgres
       depends_on:
@@ -99,13 +100,32 @@ services:
 
   # --- DATA WORKFLOWS ---
 
+  # Jupyter Notebook
+  # For editing Jupyter Notebooks
+  jupyter:
+    container_name: "DataVisPlanner-jupyter"
+    env_file:
+        - .env
+    build:
+      context: ./jupyter
+      dockerfile: Dockerfile
+      args:
+        - JUPYTER_PASSWORD=${JUPYTER_PASSWORD}
+    depends_on:
+      - webserver
+    volumes_from:
+      - webserver
+    ports:
+      - 8888:8888
+    command: start-notebook.sh --no-browser
+
   # Cloud9
   # For editing Airflow DAGs
   cloud9:
     container_name: "DataVisPlanner-cloud9"
     image: agungf/cloud9-ide
     env_file:
-        - environment.env
+        - .env
     depends_on:
       - webserver
     volumes_from:
