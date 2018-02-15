@@ -107,8 +107,8 @@ services:
     env_file:
         - .env
     build:
-      context: ./jupyter
-      dockerfile: Dockerfile
+      context: ./airflow
+      dockerfile: Dockerfile-jupyter
       args:
         - JUPYTER_PASSWORD=${JUPYTER_PASSWORD}
     depends_on:

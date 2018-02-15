@@ -28,8 +28,9 @@ RUN jupyter notebook --generate-config
 # Set up the password from the environment
 ARG JUPYTER_PASSWORD
 ENV JUPYTER_PASSWORD=$JUPYTER_PASSWORD
-COPY ./setup.py /setup.py
+COPY ./jupyter-setup.py /jupyter-setup.py
 RUN $CONDA_DIR/envs/python2/bin/easy_install hashlib
-RUN $CONDA_DIR/envs/python2/bin/python /setup.py
+RUN $CONDA_DIR/envs/python2/bin/python /jupyter-setup.py
 
-WORKDIR .jupyter/
+COPY ./data_analysis/. /user/local/data_analysis/
+WORKDIR /user/local/data_analysis/
