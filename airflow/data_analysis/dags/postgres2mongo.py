@@ -30,6 +30,7 @@ class DAG_Description(mongoengine.Document):
     clean_data = mongoengine.DictField()
     vis_type = mongoengine.StringField(required=True, max_length=200)
     vis_title = mongoengine.StringField(max_length=120)
+    vis_configuration = mongoengine.StringField(max_length=400)
     vis_text = mongoengine.StringField(max_length=400)
     vis_footer = mongoengine.StringField(max_length=400)
     created_at = mongoengine.DateTimeField()
@@ -76,10 +77,11 @@ def cli(args):
                     clean_data=data[0][2],
                     vis_type=data[0][3],
                     vis_title=data[0][4],
-                    vis_text=data[0][5],
-                    vis_footer=data[0][6],
-                    created_at=data[0][7],
-                    updated_at=data[0][8])
+                    vis_configuration=data[0][5],
+                    vis_text=data[0][6],
+                    vis_footer=data[0][7],
+                    created_at=data[0][8],
+                    updated_at=data[0][9])
                 # Save the document
                 dag_document.save()
             # If there are more than one documents, get the first one

@@ -11,6 +11,11 @@ USER root
 RUN apt-get update
 RUN apt-get install nano
 
+# Fix a Python problem
+RUN apt-get -y remove python-setuptools
+RUN pip install --upgrade pip
+RUN pip install -U pip setuptools
+
 # Install custom airflow
 RUN pip install apache-airflow[password]==$AIRFLOW_VERSION
 COPY ./entrypoint.sh /entrypoint.sh

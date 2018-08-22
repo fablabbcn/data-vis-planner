@@ -43,7 +43,7 @@ def setup_db(**kwargs):
     global pg_hook
     global dag_name
     # Create the dag_dag table for storing all the data
-    pg_command = """CREATE TABLE IF NOT EXISTS dag_dag ( id CHAR(50) PRIMARY KEY, raw_data jsonb, clean_data jsonb, type CHAR(50), title varchar(120), text varchar(400), footer varchar(400), created_at timestamp DEFAULT NOW(), updated_at timestamp DEFAULT NOW() );"""
+    pg_command = """CREATE TABLE IF NOT EXISTS dag_dag ( id CHAR(50) PRIMARY KEY, raw_data jsonb, clean_data jsonb, type CHAR(50), title varchar(120), text varchar(400), configuration varchar(800), footer varchar(400), created_at timestamp DEFAULT NOW(), updated_at timestamp DEFAULT NOW() );"""
     pg_hook.run(pg_command)
     # A function for updating the updated_at column at each UPDATE
     pg_command = """CREATE OR REPLACE FUNCTION update_at_function()
@@ -62,6 +62,7 @@ def setup_db(**kwargs):
     # Save the data
     dag_type = "barchart"
     dag_title = "Template DAG"
+    dag_configuration = "{}"
     dag_text = "..."
     dag_footer = "..."
     new_id = dag_name
@@ -73,12 +74,12 @@ def setup_db(**kwargs):
     for i in pg_hook.get_records(pg_command, parameters=[search_term]):
         previous_dags_same_name.append(i[0].rstrip())
     if len(previous_dags_same_name) > 0:
-        pg_command = """UPDATE dag_dag SET type = %s, title = %s, text = %s, footer = %s WHERE id = %s"""
-        pg_hook.run(pg_command, parameters=[dag_type, dag_title, dag_text, dag_footer, new_id])
+        pg_command = """UPDATE dag_dag SET type = %s, title = %s, configuration = %s, text = %s, footer = %s WHERE id = %s"""
+        pg_hook.run(pg_command, parameters=[dag_type, dag_title, dag_configuration, dag_text, dag_footer, new_id])
     else:
         # Otherwise, add a new row
-        pg_command = """INSERT INTO dag_dag ( id, type, title, text, footer) VALUES ( %s, %s, %s, %s, %s )"""
-        pg_hook.run(pg_command, parameters=[new_id, dag_type, dag_title, dag_text, dag_footer])
+        pg_command = """INSERT INTO dag_dag ( id, type, title, configuration, text, footer) VALUES ( %s, %s, %s, %s, %s, %s )"""
+        pg_hook.run(pg_command, parameters=[new_id, dag_type, dag_title, dag_configuration, dag_text, dag_footer])
 
     # Return the updated id name
     return new_id
