@@ -29,6 +29,6 @@ Template.List.onDestroyed(function () {
 
 // Setup of tabular for this template
 import { $ } from 'meteor/jquery';
-import dataTablesBootstrap from 'datatables.net-bs';
-import 'datatables.net-bs/css/dataTables.bootstrap.css';
+import dataTablesBootstrap from 'datatables.net-bs4';
+import 'datatables.net-bs4/css/dataTables.bootstrap4.min.css';
 dataTablesBootstrap(window, $);
