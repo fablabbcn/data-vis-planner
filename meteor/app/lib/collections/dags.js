@@ -74,7 +74,7 @@ if (Meteor.isServer) {
             console.log("A new DAGs data source was created in Mongo with id:", id._str);
             // Check that there are no existing dagsvis for the same dag already existing
             existingDagsVis = DagsVis.findOne({
-                "dag_id": id
+                "dag_id": id._str
             }, {
                 fields: {
                     "dag_id": 1
@@ -82,7 +82,7 @@ if (Meteor.isServer) {
             });
             if (_.isEmpty(existingDagsVis)) {
                 // Create a visualisation
-                Meteor.call('add_vis', id, function(error, result) {
+                Meteor.call('add_vis', id._str, function(error, result) {
                     if (error) {
                         console.log("Error in adding a visualisation:", error, "ID:", id._str);
                     } else {
@@ -97,7 +97,7 @@ if (Meteor.isServer) {
             // An existing data source from DAGs was edited
             console.log("An existing DAGs data source was edited in Mongo with id:", id._str);
             // Edit a visualisation
-            Meteor.call('change_vis', id, function(error, result) {
+            Meteor.call('change_vis', id._str, function(error, result) {
                 if (error) {
                     console.log("Error in editing a visualisation:", error, "ID:", id._str);
                 } else {
@@ -109,7 +109,7 @@ if (Meteor.isServer) {
             // An existing data source from DAGs was deleted
             console.log("An existing DAGs data source was deleted in Mongo with id:", id._str);
             // Delete a visualisation
-            Meteor.call('remove_vis', id, function(error, result) {
+            Meteor.call('remove_vis', id._str, function(error, result) {
                 if (error) {
                     console.log("Error in deleting a visualisation:", error, "ID:", id._str);
                 } else {
