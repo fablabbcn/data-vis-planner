@@ -30,7 +30,7 @@ class DAG_Description(mongoengine.Document):
     clean_data = mongoengine.DictField()
     vis_type = mongoengine.StringField(required=True, max_length=200)
     vis_title = mongoengine.StringField(max_length=120)
-    vis_configuration = mongoengine.StringField(max_length=400)
+    vis_configuration = mongoengine.DictField()
     vis_text = mongoengine.StringField(max_length=400)
     vis_footer = mongoengine.StringField(max_length=400)
     created_at = mongoengine.DateTimeField()

@@ -43,7 +43,7 @@ def setup_db(**kwargs):
     global pg_hook
     global dag_name
     # Create the dag_dag table for storing all the data
-    pg_command = """CREATE TABLE IF NOT EXISTS dag_dag ( id CHAR(50) PRIMARY KEY, raw_data jsonb, clean_data jsonb, type CHAR(50), title varchar(120), configuration varchar(800), text varchar(400), footer varchar(400), created_at timestamp DEFAULT NOW(), updated_at timestamp DEFAULT NOW() );"""
+    pg_command = """CREATE TABLE IF NOT EXISTS dag_dag ( id CHAR(50) PRIMARY KEY, raw_data jsonb, clean_data jsonb, type CHAR(50), title varchar(120), configuration jsonb, text varchar(400), footer varchar(400), created_at timestamp DEFAULT NOW(), updated_at timestamp DEFAULT NOW() );"""
     pg_hook.run(pg_command)
     # A function for updating the updated_at column at each UPDATE
     pg_command = """CREATE OR REPLACE FUNCTION update_at_function()
@@ -60,9 +60,10 @@ def setup_db(**kwargs):
     pg_command = """CREATE TRIGGER update_column BEFORE UPDATE ON dag_dag FOR EACH ROW EXECUTE PROCEDURE update_at_function();"""
     pg_hook.run(pg_command)
     # Save the data
-    dag_type = "barchart"
+    dag_type = "plotly"
     dag_title = "Template DAG"
-    dag_configuration = "{}"
+    dag_configuration = {"title": dag_title}
+    dag_configuration = json.dumps(dag_configuration)
     dag_text = "..."
     dag_footer = "..."
     new_id = dag_name
@@ -108,8 +109,12 @@ def clean_data(**kwargs):
     # Load data from the raw_data column, it's only 1 value
     pg_command = """SELECT raw_data FROM dag_dag WHERE id = %s"""
     data = pg_hook.get_records(pg_command, parameters=[new_id])[0][0]
-    # clean the data for the Meteor visualisation
-    data = {"number of labs": len(data)}
+    # Clean the data for the Meteor visualisation in the Plotly format
+    data = {
+        "x": ["number of labs"],
+        "y": [len(data)],
+        "type": 'bar'
+    }
     # Transform the dict into a string for PostgreSQL
     data = json.dumps(data)
     # Save the data
