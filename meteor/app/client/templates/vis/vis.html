@@ -1,14 +1,31 @@
 <template name="Vis">
     <div class="vis">
         {{#with data}}
-            <h3>{{title}}</h3>
-            <p>
-                {{text}}
-            </p>
-            <div id="visdiv"></div>
-            <p>
-                {{footer}}
-            </p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3>{{title}}</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="visdiv"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3>{{text}}</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3>{{footer}}</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3>{{updatedAt}}</h3>
+                </div>
+            </div>
         {{/with}}
     </div>
 </template>
