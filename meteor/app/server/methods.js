@@ -13,8 +13,10 @@ Meteor.methods({
         // Create a visualistion for this DAG
         return DagsVis.insert({
             "name": dag["dag_name"],
+            "dag_id_str": id.str,
             "dag_id": id,
             "title": dag["vis_title"],
+            "configuration": dag["vis_configuration"],
             "text": dag["vis_text"],
             "type": dag["vis_type"],
             "createdAt": dag["created_at"],
