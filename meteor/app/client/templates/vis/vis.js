@@ -35,7 +35,7 @@ Template.Vis.onRendered(function() {
             t: 0
         }
     };
-    Plotly.plot($('#visdiv')[0], data, settings);
+    Plotly.plot($('#vis-div')[0], data, settings);
 });
 
 Template.Vis.onDestroyed(function() {});

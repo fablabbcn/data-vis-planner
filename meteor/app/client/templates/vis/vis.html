@@ -3,27 +3,36 @@
         {{#with data}}
             <div class="row">
                 <div class="col-sm-12">
-                    <h3>{{title}}</h3>
+                    <h1>{{title}}</h1>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <div id="visdiv"></div>
+                    <div id="vis-div"></div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row vis-text">
                 <div class="col-sm-12">
-                    <h3>{{text}}</h3>
+                    <p class="text-left">
+                        {{text}}
+                    </p>
                 </div>
             </div>
-            <div class="row">
+            <div class="row updated-at">
                 <div class="col-sm-12">
-                    <h3>{{footer}}</h3>
+                    <p>
+                        <i class="fa fa-clock-o" aria-hidden="true">
+                        </i>
+                        Last updated at:
+                        {{updatedAt}}
+                    </p>
                 </div>
             </div>
-            <div class="row">
+            <div class="row footer">
                 <div class="col-sm-12">
-                    <h3>{{updatedAt}}</h3>
+                    <p>
+                        {{footer}}
+                    </p>
                 </div>
             </div>
         {{/with}}

@@ -3,3 +3,19 @@
 /*****************************************************************************/
 .vis {
 }
+
+.vis h1 {
+    text-align: left;
+}
+
+.vis-text {
+}
+
+.updated-at {
+    font-size: 80%;
+    font-weight: 300;
+}
+
+.footer {
+    font-size: 10px;
+}
