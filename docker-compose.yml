@@ -31,6 +31,8 @@ services:
       - mongo
     links:
       - mongo
+    environment:
+      - MONGO_URL=mongodb://MONGOUSERNAME:MONGOPASSWORD@mongo:27017/meteor
     ports:
       - 3000:3000
 
@@ -42,8 +44,15 @@ services:
   # Shared db between data visualisations and analyses
   mongo:
     container_name: "DataVisPlanner-mongo"
-    image: mongo:latest
     hostname: mongodb
+    build:
+      context: ./mongo/
+      dockerfile: Dockerfile-mongo
+    restart: always
+    environment:
+      - "MONGO_INITDB_ROOT_USERNAME=MONGOADMINUSERNAME"
+      - "MONGO_INITDB_ROOT_PASSWORD=MONGOADMINPASSWORD"
+      - "MONGO_INITDB_DATABASE=admin"
     volumes:
       - mongo:/data
     ports:

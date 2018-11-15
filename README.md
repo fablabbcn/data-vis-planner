@@ -11,6 +11,11 @@ The platform is organized with docker-compose, so the installation is quite simp
 - Go inside the project folder: ``cd DataVisPlanner``
 - Customise the ``docker-compose.yml`` file if necessary
 - Customise the ``environment.env`` and ``airflow.env`` files if necessary
+- Customise the ``docker-compose.yml`` and ```mongo/mongo-init.js``` files for securing MongoDB where:
+	- *MONGOADMINUSERNAME* is the admin username for MongoDB
+	- *MONGOADMINPASSWORD* is the admin password for MongoDB
+	- *MONGOUSERNAME* is the admin username for connecting Meteor with MongoDB
+	- *MONGOPASSWORD* is the admin password for connecting Meteor with MongoDB
 - Copy the ``environment.env`` to ``.env`` file
 - Test the platform: ``docker-compose up --build``
 - Run the platform: ``docker-compose up -d``
