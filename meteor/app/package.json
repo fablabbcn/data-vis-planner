@@ -10,7 +10,7 @@
     "datatables.net-bs4": "^1.10.19",
     "datatables.net-buttons": "^1.4.2",
     "datatables.net-buttons-bs": "^1.4.2",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.0",
     "meteor-node-stubs": "~0.2.4",
     "node-gyp": "^3.6.2",
     "node-pre-gyp": "^0.11.0"
